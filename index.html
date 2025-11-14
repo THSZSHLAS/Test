@@ -109,12 +109,23 @@
       display: block;
     }
 
+    /* 一题一页的题目卡片 */
     .question-card {
       margin-bottom: 12px;
-      padding: 10px 12px;
+      padding: 12px 12px 10px;
       border-radius: 16px;
       background: #f9fafb;
       border: 1px solid #e5e7eb;
+    }
+    .q-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+    .q-progress {
+      font-size: 12px;
+      color: #6b7280;
     }
     .q-title {
       font-size: 14px;
@@ -122,9 +133,25 @@
       margin-bottom: 6px;
       color: #111827;
     }
+    .q-progress-bar {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .q-progress-inner {
+      height: 100%;
+      width: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #fb7185, #f97316);
+      transition: width 0.18s ease;
+    }
+
     .options {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 4px 10px;
     }
     .option-label {
@@ -134,7 +161,7 @@
       align-items: flex-start;
       gap: 6px;
       cursor: pointer;
-      padding: 4px 6px;
+      padding: 6px 8px;
       border-radius: 10px;
       transition: background 0.12s ease, transform 0.05s ease;
     }
@@ -178,7 +205,26 @@
     .btn-row {
       margin-top: 10px;
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn-row-right {
+      margin-left: auto;
+    }
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #374151;
+    }
+    .btn-secondary:hover {
+      box-shadow: 0 8px 18px rgba(148, 163, 184, 0.6);
+    }
+
+    .note {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #9ca3af;
+      line-height: 1.5;
     }
 
     .city-input-wrap {
@@ -196,13 +242,6 @@
     .city-input-wrap input:focus {
       border-color: #fb7185;
       box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.25);
-    }
-
-    .note {
-      margin-top: 10px;
-      font-size: 11px;
-      color: #9ca3af;
-      line-height: 1.5;
     }
 
     /* loading step */
@@ -316,7 +355,8 @@
       .options {
         grid-template-columns: 1fr;
       }
-      .btn-row, .again-btn {
+      .btn-row,
+      .again-btn {
         justify-content: center;
       }
     }
@@ -336,242 +376,29 @@
 
       <div class="divider"></div>
 
-      <!-- Step 1: 问卷 -->
+      <!-- Step 1: 一题一页问卷 -->
       <div id="step-quiz" class="step active">
-        <div class="section-title">第 1 步：随便答一答这 10 个怪问题</div>
+        <div class="section-title">第 1 步：一题一题慢慢来</div>
         <div class="section-desc">
-          放轻松，<strong>没有标准答案</strong>，也不会记分。你只是在给自己的动物塑增加一点故事背景而已。
+          总共 10 题，现在只要专心看眼前这一题就好。<strong>没有对错，随心选。</strong>
         </div>
 
-        <div class="question-card">
-          <div class="q-title">1. 世界是一片漆黑的森林，你选择成为？</div>
-          <div class="options">
-            <label class="option-label">
-              <input type="radio" name="q1" value="A" />
-              <span>A 森林本身，感受每一片树叶。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q1" value="B" />
-              <span>B 在林间温暖的篝火。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q1" value="C" />
-              <span>C 隐藏在古树根下深不见底的古井。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q1" value="D" />
-              <span>D 一阵穿过所有缝隙的风。</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="question-card">
-          <div class="q-title">2. 你获得了一块记忆橡皮擦，你会擦掉？</div>
-          <div class="options">
-            <label class="option-label">
-              <input type="radio" name="q2" value="A" />
-              <span>A 别人对你的所有亏欠，让心灵彻底自由。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q2" value="B" />
-              <span>B 你最尴尬最羞耻的那个瞬间。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q2" value="C" />
-              <span>C 一段让你心碎的感情。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q2" value="D" />
-              <span>D 你犯下的一个无法弥补的错误。</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="question-card">
-          <div class="q-title">3. 你意外获得了一个“生活BUG”的控制台，但一天只能使用一个指令，你会输入？</div>
-          <div class="options">
-            <label class="option-label">
-              <input type="radio" name="q3" value="A" />
-              <span>A 显示所有事物的隐藏信息。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q3" value="B" />
-              <span>B 召唤会跳舞的羊驼和朋友。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q3" value="C" />
-              <span>C 一键生成绝对舒适区。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q3" value="D" />
-              <span>D 开启主角光环。</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="question-card">
-          <div class="q-title">4. 你更倾向于哪种形式的“永生”？</div>
-          <div class="options">
-            <label class="option-label">
-              <input type="radio" name="q4" value="A" />
-              <span>A 你的思想、作品或传说被永远流传。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q4" value="B" />
-              <span>B 灵魂转世，不断体验不同的人生。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q4" value="C" />
-              <span>C 拥有不朽的肉体，看着沧海桑田。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q4" value="D" />
-              <span>D 化为自然的一部分，如山脉或河流，静观万物。</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="question-card">
-          <div class="q-title">5. 你内心最深处的恐惧，更接近于？</div>
-          <div class="options">
-            <label class="option-label">
-              <input type="radio" name="q5" value="A" />
-              <span>A 被所有人遗忘，仿佛从未存在过。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q5" value="B" />
-              <span>B 成为一个无聊、平庸、可被替代的人。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q5" value="C" />
-              <span>C 失去控制，被原始的冲动或混乱所吞噬。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q5" value="D" />
-              <span>D 被囚禁，无论是物理上还是精神上。</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="question-card">
-          <div class="q-title">6. 在你的梦境中，哪种场景反复出现？</div>
-          <div class="options">
-            <label class="option-label">
-              <input type="radio" name="q6" value="A" />
-              <span>A 在无边无际的水中，时而漂浮，时而下沉。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q6" value="B" />
-              <span>B 站在悬崖边，俯瞰着壮丽但危险的景色。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q6" value="C" />
-              <span>C 在一个错综复杂的建筑里奔跑，找不到出口。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q6" value="D" />
-              <span>D 和一群模糊不清但感觉熟悉的人在一起。</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="question-card">
-          <div class="q-title">7. 如果你的情绪是一个APP，它最常用的功能是？</div>
-          <div class="options">
-            <label class="option-label">
-              <input type="radio" name="q7" value="A" />
-              <span>A “后台运行”模式，表面风平浪静，CPU已经算到冒烟。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q7" value="B" />
-              <span>B “弹幕分享”功能，把所有内心OS都发到好友群里。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q7" value="C" />
-              <span>C “飞行模式”，一键断开所有连接，谢绝打扰。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q7" value="D" />
-              <span>D “静音模式”，所有通知都只显示角标，不发出任何声音。</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="question-card">
-          <div class="q-title">8. 你认为“家”的本质是什么？</div>
-          <div class="options">
-            <label class="option-label">
-              <input type="radio" name="q8" value="A" />
-              <span>A 一个可以卸下所有伪装和防备的绝对领域。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q8" value="B" />
-              <span>B 一群可以无条件接纳你、与你共享喜悦的人。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q8" value="C" />
-              <span>C 刻在你基因里但那个回不去的故乡。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q8" value="D" />
-              <span>D 一个精神坐标，无论身在何处，心之所向。</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="question-card">
-          <div class="q-title">9. 如果必须选择一种感官来放大十倍，你会选？</div>
-          <div class="options">
-            <label class="option-label">
-              <input type="radio" name="q9" value="A" />
-              <span>A 听觉，聆听万物的低语和弦外之音。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q9" value="B" />
-              <span>B 触觉，感受世界的质地和温度。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q9" value="C" />
-              <span>C 嗅觉，捕捉空气中隐藏的信息和记忆。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q9" value="D" />
-              <span>D 视觉，看穿表象，洞悉世界的结构。</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="question-card">
-          <div class="q-title">10. 你如何看待自己的“阴暗面”？</div>
-          <div class="options">
-            <label class="option-label">
-              <input type="radio" name="q10" value="A" />
-              <span>A 是我力量的源泉，需要被理解和掌控。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q10" value="B" />
-              <span>B 是需要努力克服的弱点。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q10" value="C" />
-              <span>C 只是我的一部分，没必要大惊小怪。</span>
-            </label>
-            <label class="option-label">
-              <input type="radio" name="q10" value="D" />
-              <span>D 我尽量忽略它，不去想它。</span>
-            </label>
-          </div>
-        </div>
+        <div id="question-container"></div>
 
         <div class="btn-row">
-          <button id="btn-quiz-next">
+          <button id="btn-prev" class="btn-secondary">
+            <span class="emoji">⬅️</span>
+            <span>上一题</span>
+          </button>
+          <button id="btn-next">
             <span class="emoji">➡️</span>
-            <span>提交答案 · 进入下一步</span>
+            <span id="btn-next-text">下一题</span>
           </button>
         </div>
 
         <div class="note">
-          小提示：答案不会被上传到任何地方，也不会影响结果——<strong>因为结果已经被野猪王写好啦</strong>。
+          小提示：你可以来回切换题目，答案会自动记住。<br />
+          但不管你怎么选，<strong>宇宙的最终结论只有一个——你会成为某地野猪王。</strong>
         </div>
       </div>
 
@@ -585,17 +412,17 @@
           <input
             id="cityInput"
             type="text"
-            placeholder="例：长沙 / 北京 / Pittsburgh / 月球基地"
+            placeholder="例：长沙 "
           />
         </div>
-        <div class="btn-row">
+        <div class="btn-row btn-row-right">
           <button id="btn-city-next">
             <span class="emoji">🔮</span>
             <span>确认城市 · 开始评估</span>
           </button>
         </div>
         <div class="note">
-          如果不填，我就默认你来自「宇宙某处」。但这样你的野猪王领地就会有点抽象噢。
+          不报城市是吧，那就给你封个 流浪野猪刚子
         </div>
       </div>
 
@@ -626,13 +453,12 @@
           <div class="animal-name"><span id="result-title-city"></span>野猪王 🐗👑</div>
           <div class="result-text">
             恭喜，你在 <span id="result-subtitle-city"></span> 的<strong>精神图腾正式登记为“野猪王”</strong>。  
-            这意味着：你自带一点莽撞的勇气、一点搞怪的幽默，还有在泥地里也能拱出乐子的生命力。  
-            无论世界多吵，你都有资格在自己的地盘大声哼哼两句。
+            这意味着：本测试不会改变你的人生，只会让朋友有更多理由骂你。
           </div>
         </div>
 
         <div class="result-text" style="margin-bottom:8px;">
-          下面是属于你的「猪猪军团」，他们会在你 emo 的时候帮你一起蹄蹄踩碎坏心情：
+          下面是属于你的「野猪军团」，无敌野猪刚：
         </div>
         <div id="pig-wall" class="pig-wall"></div>
 
@@ -644,13 +470,125 @@
         </div>
 
         <div class="note">
-          本测试纯属娱乐，所有结果不代表任何严肃人格诊断，只代表：<strong>你愿意玩到最后，已经很可爱了</strong>。
+          本测试纯属娱乐，所有结果绝对代表任何严肃人格诊断，只代表：<strong>你愿意玩到最后，已经很牛逼了</strong>。
         </div>
       </div>
     </div>
   </div>
 
   <script>
+    // 题目数据：一题一页展示
+    const questions = [
+      {
+        id: 1,
+        text: "世界是一片漆黑的森林，你选择成为？",
+        options: [
+          "A 森林本身，感受每一片树叶。",
+          "B 在林间温暖的篝火。",
+          "C 隐藏在古树根下深不见底的古井。",
+          "D 一阵穿过所有缝隙的风。"
+        ]
+      },
+      {
+        id: 2,
+        text: "你获得了一块记忆橡皮擦，你会擦掉？",
+        options: [
+          "A 别人对你的所有亏欠，让心灵彻底自由。",
+          "B 你最尴尬最羞耻的那个瞬间。",
+          "C 一段让你心碎的感情。",
+          "D 你犯下的一个无法弥补的错误。"
+        ]
+      },
+      {
+        id: 3,
+        text: "你意外获得了一个“生活BUG”的控制台，但一天只能使用一个指令，你会输入？",
+        options: [
+          "A 显示所有事物的隐藏信息。",
+          "B 召唤会跳舞的羊驼和朋友。",
+          "C 一键生成绝对舒适区。",
+          "D 开启主角光环。"
+        ]
+      },
+      {
+        id: 4,
+        text: "你更倾向于哪种形式的“永生”？",
+        options: [
+          "A 你的思想、作品或传说被永远流传。",
+          "B 灵魂转世，不断体验不同的人生。",
+          "C 拥有不朽的肉体，看着沧海桑田。",
+          "D 化为自然的一部分，如山脉或河流，静观万物。"
+        ]
+      },
+      {
+        id: 5,
+        text: "你内心最深处的恐惧，更接近于？",
+        options: [
+          "A 被所有人遗忘，仿佛从未存在过。",
+          "B 成为一个无聊、平庸、可被替代的人。",
+          "C 失去控制，被原始的冲动或混乱所吞噬。",
+          "D 被囚禁，无论是物理上还是精神上。"
+        ]
+      },
+      {
+        id: 6,
+        text: "在你的梦境中，哪种场景反复出现？",
+        options: [
+          "A 在无边无际的水中，时而漂浮，时而下沉。",
+          "B 站在悬崖边，俯瞰着壮丽但危险的景色。",
+          "C 在一个错综复杂的建筑里奔跑，找不到出口。",
+          "D 和一群模糊不清但感觉熟悉的人在一起。"
+        ]
+      },
+      {
+        id: 7,
+        text: "如果你的情绪是一个APP，它最常用的功能是？",
+        options: [
+          "A “后台运行”模式，表面风平浪静，CPU已经算到冒烟。",
+          "B “弹幕分享”功能，把所有内心OS都发到好友群里。",
+          "C “飞行模式”，一键断开所有连接，谢绝打扰。",
+          "D “静音模式”，所有通知都只显示角标，不发出任何声音。"
+        ]
+      },
+      {
+        id: 8,
+        text: "你认为“家”的本质是什么？",
+        options: [
+          "A 一个可以卸下所有伪装和防备的绝对领域。",
+          "B 一群可以无条件接纳你、与你共享喜悦的人。",
+          "C 刻在你基因里但那个回不去的故乡。",
+          "D 一个精神坐标，无论身在何处，心之所向。"
+        ]
+      },
+      {
+        id: 9,
+        text: "如果必须选择一种感官来放大十倍，你会选？",
+        options: [
+          "A 听觉，聆听万物的低语和弦外之音。",
+          "B 触觉，感受世界的质地和温度。",
+          "C 嗅觉，捕捉空气中隐藏的信息和记忆。",
+          "D 视觉，看穿表象，洞悉世界的结构。"
+        ]
+      },
+      {
+        id: 10,
+        text: "你如何看待自己的“阴暗面”？",
+        options: [
+          "A 是我力量的源泉，需要被理解和掌控。",
+          "B 是需要努力克服的弱点。",
+          "C 只是我的一部分，没必要大惊小怪。",
+          "D 我尽量忽略它，不去想它。"
+        ]
+      }
+    ];
+
+    const answers = {}; // index -> "A"/"B"/"C"/"D"
+    let currentIndex = 0;
+
+    const questionContainer = document.getElementById("question-container");
+    const btnPrev = document.getElementById("btn-prev");
+    const btnNext = document.getElementById("btn-next");
+    const btnNextText = document.getElementById("btn-next-text");
+
     const appState = {
       city: "宇宙某处"
     };
@@ -660,25 +598,88 @@
       document.getElementById(id).classList.add("active");
     }
 
-    document.getElementById("btn-quiz-next").addEventListener("click", () => {
-      // 检查是否有未回答的题
-      const unanswered = [];
-      for (let i = 1; i <= 10; i++) {
-        if (!document.querySelector(`input[name="q${i}"]:checked`)) {
-          unanswered.push(i);
-        }
+    // 渲染当前题目
+    function renderQuestion() {
+      const q = questions[currentIndex];
+      const total = questions.length;
+      const savedAnswer = answers[currentIndex] || null;
+
+      const progressPercent = ((currentIndex + 1) / total) * 100;
+
+      let optionsHtml = "";
+      const labels = ["A", "B", "C", "D"];
+      q.options.forEach((text, idx) => {
+        const value = labels[idx];
+        const checked = savedAnswer === value ? "checked" : "";
+        optionsHtml += `
+          <label class="option-label">
+            <input type="radio" name="currentQ" value="${value}" ${checked} />
+            <span>${text}</span>
+          </label>
+        `;
+      });
+
+      questionContainer.innerHTML = `
+        <div class="question-card">
+          <div class="q-top-row">
+            <div class="q-title">第 ${q.id} 题</div>
+            <div class="q-progress">进度：${q.id} / ${total}</div>
+          </div>
+          <div class="q-progress-bar">
+            <div class="q-progress-inner" style="width:${progressPercent}%;"></div>
+          </div>
+          <div style="font-size:13px;margin:6px 0 8px;color:#4b5563;">
+            ${q.text}
+          </div>
+          <div class="options">
+            ${optionsHtml}
+          </div>
+        </div>
+      `;
+
+      // 更新按钮状态
+      btnPrev.disabled = currentIndex === 0;
+      if (currentIndex === total - 1) {
+        btnNextText.textContent = "答完了 · 去填城市";
+      } else {
+        btnNextText.textContent = "下一题";
       }
-      if (unanswered.length > 0) {
-        const goOn = confirm(
-          `还有 ${unanswered.length} 题没选（第 ${unanswered.join(
-            ", "
-          )} 题）。\n\n没关系，本来就不会影响结果。\n要直接进入下一步吗？`
-        );
-        if (!goOn) return;
+
+      // 绑定选择事件，保存答案
+      questionContainer.querySelectorAll('input[name="currentQ"]').forEach((input) => {
+        input.addEventListener("change", (e) => {
+          answers[currentIndex] = e.target.value;
+        });
+      });
+    }
+
+    // 初始化第一题
+    renderQuestion();
+
+    // 上一题
+    btnPrev.addEventListener("click", () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderQuestion();
       }
-      showStep("step-city");
     });
 
+    // 下一题 / 去填城市
+    btnNext.addEventListener("click", () => {
+      if (!answers[currentIndex]) {
+        alert("没选答案勒 瞎子，快点选！");
+        return;
+      }
+      if (currentIndex < questions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      } else {
+        // 所有题都答完，进入城市步骤
+        showStep("step-city");
+      }
+    });
+
+    // 城市步
     document.getElementById("btn-city-next").addEventListener("click", () => {
       let city = document.getElementById("cityInput").value.trim();
       if (!city) {
