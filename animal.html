@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>测一测你的动物塑 · 城市野猪王测试</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: radial-gradient(circle at top, #ffe4f1 0, #fdf2ff 30%, #e0f2fe 70%, #fef9c3 100%);
+      color: #111827;
+    }
+    .app {
+      max-width: 900px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 22px;
+      padding: 20px 18px 24px;
+      box-shadow: 0 18px 40px rgba(148, 163, 184, 0.6);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      position: relative;
+      overflow: hidden;
+    }
+    .app::before {
+      content: "♡";
+      position: absolute;
+      font-size: 90px;
+      color: rgba(248, 187, 208, 0.4);
+      right: -8px;
+      top: -24px;
+      transform: rotate(-18deg);
+      pointer-events: none;
+    }
+    .app::after {
+      content: "🐷";
+      position: absolute;
+      font-size: 60px;
+      left: -6px;
+      bottom: -6px;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .app-inner {
+      position: relative;
+      z-index: 1;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .title-main {
+      font-size: 26px;
+      margin: 0 0 4px;
+      letter-spacing: 0.12em;
+      text-indent: 0.12em;
+      font-weight: 700;
+      color: #be123c;
+    }
+    .title-sub {
+      font-size: 13px;
+      color: #6b7280;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      align-items: center;
+    }
+    .pill {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #fee2e2;
+      color: #9f1239;
+      font-size: 11px;
+    }
+    .divider {
+      height: 1px;
+      margin: 14px 0 18px;
+      background: linear-gradient(to right, transparent, #fb7185, #f97316, transparent);
+      opacity: 0.8;
+    }
+    .section-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #be123c;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .section-title::before {
+      content: "✨";
+      font-size: 16px;
+    }
+    .section-desc {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 10px;
+    }
+
+    .step {
+      display: none;
+    }
+    .step.active {
+      display: block;
+    }
+
+    .question-card {
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+    .q-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #111827;
+    }
+    .options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 4px 10px;
+    }
+    .option-label {
+      font-size: 13px;
+      color: #374151;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 10px;
+      transition: background 0.12s ease, transform 0.05s ease;
+    }
+    .option-label:hover {
+      background: #fee2e2;
+      transform: translateY(-1px);
+    }
+    .option-label input {
+      margin-top: 2px;
+      accent-color: #f97373;
+    }
+
+    button {
+      padding: 11px 22px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 0.04em;
+      background: linear-gradient(135deg, #fb7185, #f97316);
+      color: #fff7ed;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.1s ease;
+    }
+    button span.emoji {
+      font-size: 18px;
+    }
+    button:hover {
+      box-shadow: 0 10px 24px rgba(248, 113, 113, 0.7);
+      transform: translateY(-1px) scale(1.01);
+      filter: brightness(1.03);
+    }
+    button:active {
+      transform: translateY(0) scale(0.99);
+      box-shadow: none;
+      filter: brightness(0.96);
+    }
+    .btn-row {
+      margin-top: 10px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .city-input-wrap {
+      margin: 10px 0 4px;
+    }
+    .city-input-wrap input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.12s ease, box-shadow 0.12s ease;
+    }
+    .city-input-wrap input:focus {
+      border-color: #fb7185;
+      box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.25);
+    }
+
+    .note {
+      margin-top: 10px;
+      font-size: 11px;
+      color: #9ca3af;
+      line-height: 1.5;
+    }
+
+    /* loading step */
+    .loading-box {
+      padding: 12px;
+      border-radius: 16px;
+      background: #f9fafb;
+      border: 1px dashed #e5e7eb;
+    }
+    .loading-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .loading-sub {
+      font-size: 13px;
+      color: #4b5563;
+    }
+    .loader-bar {
+      width: 100%;
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .loader-inner {
+      height: 100%;
+      width: 40%;
+      background: linear-gradient(90deg, #fb7185, #f97316);
+      border-radius: 999px;
+      animation: loading 1.4s infinite alternate;
+    }
+    @keyframes loading {
+      from {
+        transform: translateX(-10%);
+      }
+      to {
+        transform: translateX(80%);
+      }
+    }
+    .loading-tip {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    /* result step */
+    .result-main {
+      padding: 12px;
+      border-radius: 18px;
+      background: #fef9c3;
+      border: 1px solid rgba(250, 204, 21, 0.8);
+      margin-bottom: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .result-main::after {
+      content: "👑";
+      position: absolute;
+      right: 10px;
+      bottom: 4px;
+      font-size: 28px;
+      opacity: 0.7;
+    }
+    .result-title {
+      font-size: 14px;
+      color: #92400e;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .animal-name {
+      font-size: 22px;
+      font-weight: 800;
+      color: #b91c1c;
+      margin-bottom: 6px;
+    }
+    .result-text {
+      font-size: 13px;
+      color: #4b5563;
+      line-height: 1.6;
+    }
+    .pig-wall {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 18px;
+      background: #f9fafb;
+      border: 1px dashed #e5e7eb;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(26px, 1fr));
+      gap: 4px;
+      justify-items: center;
+      font-size: 20px;
+    }
+    .again-btn {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .again-btn button {
+      background: linear-gradient(135deg, #38bdf8, #6366f1);
+    }
+
+    @media (max-width: 640px) {
+      .app {
+        padding: 14px 12px 18px;
+      }
+      .title-main {
+        font-size: 22px;
+      }
+      .options {
+        grid-template-columns: 1fr;
+      }
+      .btn-row, .again-btn {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="app-inner">
+      <header>
+        <h1 class="title-main">测一测你的动物塑</h1>
+        <div class="title-sub">
+          <span class="pill">能力无限</span>
+          <span>·</span>
+          <span>我说的话就是尺 🐷</span>
+        </div>
+      </header>
+
+      <div class="divider"></div>
+
+      <!-- Step 1: 问卷 -->
+      <div id="step-quiz" class="step active">
+        <div class="section-title">第 1 步：随便答一答这 10 个怪问题</div>
+        <div class="section-desc">
+          放轻松，<strong>没有标准答案</strong>，也不会记分。你只是在给自己的动物塑增加一点故事背景而已。
+        </div>
+
+        <div class="question-card">
+          <div class="q-title">1. 世界是一片漆黑的森林，你选择成为？</div>
+          <div class="options">
+            <label class="option-label">
+              <input type="radio" name="q1" value="A" />
+              <span>A 森林本身，感受每一片树叶。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q1" value="B" />
+              <span>B 在林间温暖的篝火。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q1" value="C" />
+              <span>C 隐藏在古树根下深不见底的古井。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q1" value="D" />
+              <span>D 一阵穿过所有缝隙的风。</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="q-title">2. 你获得了一块记忆橡皮擦，你会擦掉？</div>
+          <div class="options">
+            <label class="option-label">
+              <input type="radio" name="q2" value="A" />
+              <span>A 别人对你的所有亏欠，让心灵彻底自由。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q2" value="B" />
+              <span>B 你最尴尬最羞耻的那个瞬间。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q2" value="C" />
+              <span>C 一段让你心碎的感情。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q2" value="D" />
+              <span>D 你犯下的一个无法弥补的错误。</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="q-title">3. 你意外获得了一个“生活BUG”的控制台，但一天只能使用一个指令，你会输入？</div>
+          <div class="options">
+            <label class="option-label">
+              <input type="radio" name="q3" value="A" />
+              <span>A 显示所有事物的隐藏信息。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q3" value="B" />
+              <span>B 召唤会跳舞的羊驼和朋友。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q3" value="C" />
+              <span>C 一键生成绝对舒适区。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q3" value="D" />
+              <span>D 开启主角光环。</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="q-title">4. 你更倾向于哪种形式的“永生”？</div>
+          <div class="options">
+            <label class="option-label">
+              <input type="radio" name="q4" value="A" />
+              <span>A 你的思想、作品或传说被永远流传。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q4" value="B" />
+              <span>B 灵魂转世，不断体验不同的人生。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q4" value="C" />
+              <span>C 拥有不朽的肉体，看着沧海桑田。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q4" value="D" />
+              <span>D 化为自然的一部分，如山脉或河流，静观万物。</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="q-title">5. 你内心最深处的恐惧，更接近于？</div>
+          <div class="options">
+            <label class="option-label">
+              <input type="radio" name="q5" value="A" />
+              <span>A 被所有人遗忘，仿佛从未存在过。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q5" value="B" />
+              <span>B 成为一个无聊、平庸、可被替代的人。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q5" value="C" />
+              <span>C 失去控制，被原始的冲动或混乱所吞噬。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q5" value="D" />
+              <span>D 被囚禁，无论是物理上还是精神上。</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="q-title">6. 在你的梦境中，哪种场景反复出现？</div>
+          <div class="options">
+            <label class="option-label">
+              <input type="radio" name="q6" value="A" />
+              <span>A 在无边无际的水中，时而漂浮，时而下沉。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q6" value="B" />
+              <span>B 站在悬崖边，俯瞰着壮丽但危险的景色。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q6" value="C" />
+              <span>C 在一个错综复杂的建筑里奔跑，找不到出口。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q6" value="D" />
+              <span>D 和一群模糊不清但感觉熟悉的人在一起。</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="q-title">7. 如果你的情绪是一个APP，它最常用的功能是？</div>
+          <div class="options">
+            <label class="option-label">
+              <input type="radio" name="q7" value="A" />
+              <span>A “后台运行”模式，表面风平浪静，CPU已经算到冒烟。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q7" value="B" />
+              <span>B “弹幕分享”功能，把所有内心OS都发到好友群里。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q7" value="C" />
+              <span>C “飞行模式”，一键断开所有连接，谢绝打扰。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q7" value="D" />
+              <span>D “静音模式”，所有通知都只显示角标，不发出任何声音。</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="q-title">8. 你认为“家”的本质是什么？</div>
+          <div class="options">
+            <label class="option-label">
+              <input type="radio" name="q8" value="A" />
+              <span>A 一个可以卸下所有伪装和防备的绝对领域。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q8" value="B" />
+              <span>B 一群可以无条件接纳你、与你共享喜悦的人。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q8" value="C" />
+              <span>C 刻在你基因里但那个回不去的故乡。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q8" value="D" />
+              <span>D 一个精神坐标，无论身在何处，心之所向。</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="q-title">9. 如果必须选择一种感官来放大十倍，你会选？</div>
+          <div class="options">
+            <label class="option-label">
+              <input type="radio" name="q9" value="A" />
+              <span>A 听觉，聆听万物的低语和弦外之音。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q9" value="B" />
+              <span>B 触觉，感受世界的质地和温度。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q9" value="C" />
+              <span>C 嗅觉，捕捉空气中隐藏的信息和记忆。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q9" value="D" />
+              <span>D 视觉，看穿表象，洞悉世界的结构。</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="q-title">10. 你如何看待自己的“阴暗面”？</div>
+          <div class="options">
+            <label class="option-label">
+              <input type="radio" name="q10" value="A" />
+              <span>A 是我力量的源泉，需要被理解和掌控。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q10" value="B" />
+              <span>B 是需要努力克服的弱点。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q10" value="C" />
+              <span>C 只是我的一部分，没必要大惊小怪。</span>
+            </label>
+            <label class="option-label">
+              <input type="radio" name="q10" value="D" />
+              <span>D 我尽量忽略它，不去想它。</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button id="btn-quiz-next">
+            <span class="emoji">➡️</span>
+            <span>提交答案 · 进入下一步</span>
+          </button>
+        </div>
+
+        <div class="note">
+          小提示：答案不会被上传到任何地方，也不会影响结果——<strong>因为结果已经被野猪王写好啦</strong>。
+        </div>
+      </div>
+
+      <!-- Step 2: 城市 -->
+      <div id="step-city" class="step">
+        <div class="section-title">第 2 步：告诉我，你目前的地盘在哪？</div>
+        <div class="section-desc">
+          请输入你现在所在的城市（认真填、乱写都可以），这会直接决定你的动物塑称号。
+        </div>
+        <div class="city-input-wrap">
+          <input
+            id="cityInput"
+            type="text"
+            placeholder="例：长沙 / 北京 / Pittsburgh / 月球基地"
+          />
+        </div>
+        <div class="btn-row">
+          <button id="btn-city-next">
+            <span class="emoji">🔮</span>
+            <span>确认城市 · 开始评估</span>
+          </button>
+        </div>
+        <div class="note">
+          如果不填，我就默认你来自「宇宙某处」。但这样你的野猪王领地就会有点抽象噢。
+        </div>
+      </div>
+
+      <!-- Step 3: 评估中 -->
+      <div id="step-loading" class="step">
+        <div class="section-title">第 3 步：评估中……请稍候 🐽</div>
+        <div class="loading-box">
+          <div class="loading-title">
+            正在为 <span id="loading-city-name"></span> 的你解析动物塑……
+          </div>
+          <div class="loading-sub">
+            系统正在：综合 10 道题的宇宙震动值 + 城市味道参数 + 随机野猪因子。
+          </div>
+          <div class="loader-bar">
+            <div class="loader-inner"></div>
+          </div>
+          <div class="loading-tip">
+            小贴士：进度条跑完之前，你可以先深呼吸三次，顺便想一想今天要犒劳自己的小零食。
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: 结果 -->
+      <div id="step-result" class="step">
+        <div class="section-title">最终结果：欢迎登基 🎉</div>
+        <div class="result-main">
+          <div class="result-title">您的动物塑为：</div>
+          <div class="animal-name"><span id="result-title-city"></span>野猪王 🐗👑</div>
+          <div class="result-text">
+            恭喜，你在 <span id="result-subtitle-city"></span> 的<strong>精神图腾正式登记为“野猪王”</strong>。  
+            这意味着：你自带一点莽撞的勇气、一点搞怪的幽默，还有在泥地里也能拱出乐子的生命力。  
+            无论世界多吵，你都有资格在自己的地盘大声哼哼两句。
+          </div>
+        </div>
+
+        <div class="result-text" style="margin-bottom:8px;">
+          下面是属于你的「猪猪军团」，他们会在你 emo 的时候帮你一起蹄蹄踩碎坏心情：
+        </div>
+        <div id="pig-wall" class="pig-wall"></div>
+
+        <div class="again-btn">
+          <button onclick="window.location.reload()">
+            <span class="emoji">🔁</span>
+            <span>再玩一次 · 换个城市称王</span>
+          </button>
+        </div>
+
+        <div class="note">
+          本测试纯属娱乐，所有结果不代表任何严肃人格诊断，只代表：<strong>你愿意玩到最后，已经很可爱了</strong>。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const appState = {
+      city: "宇宙某处"
+    };
+
+    function showStep(id) {
+      document.querySelectorAll(".step").forEach((el) => el.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+
+    document.getElementById("btn-quiz-next").addEventListener("click", () => {
+      // 检查是否有未回答的题
+      const unanswered = [];
+      for (let i = 1; i <= 10; i++) {
+        if (!document.querySelector(`input[name="q${i}"]:checked`)) {
+          unanswered.push(i);
+        }
+      }
+      if (unanswered.length > 0) {
+        const goOn = confirm(
+          `还有 ${unanswered.length} 题没选（第 ${unanswered.join(
+            ", "
+          )} 题）。\n\n没关系，本来就不会影响结果。\n要直接进入下一步吗？`
+        );
+        if (!goOn) return;
+      }
+      showStep("step-city");
+    });
+
+    document.getElementById("btn-city-next").addEventListener("click", () => {
+      let city = document.getElementById("cityInput").value.trim();
+      if (!city) {
+        city = "宇宙某处";
+      }
+      appState.city = city;
+      document.getElementById("loading-city-name").textContent = city;
+      showStep("step-loading");
+
+      // 模拟评估时间
+      setTimeout(showResult, 2200);
+    });
+
+    function showResult() {
+      const city = appState.city || "宇宙某处";
+      document.getElementById("result-title-city").textContent = city;
+      document.getElementById("result-subtitle-city").textContent = city;
+
+      // 生成一墙猪猪
+      const pigWall = document.getElementById("pig-wall");
+      let html = "";
+      for (let i = 0; i < 72; i++) {
+        html += "<span>🐷</span>";
+      }
+      pigWall.innerHTML = html;
+
+      showStep("step-result");
+    }
+  </script>
+</body>
+</html>
