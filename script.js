@@ -1,11 +1,10 @@
-// 可配置：左右底部图片数量（和你实际素材数量一致）
+// 图片数量配置（和你真实素材数量一致）
 const LEFT_IMAGE_COUNT = 2;   // pic_L1.png ~ pic_L2.png
 const RIGHT_IMAGE_COUNT = 2;  // pic_R1.png ~ pic_R2.png
 const BOTTOM_IMAGE_COUNT = 3; // pic_B1.png ~ pic_B3.png
 
-// 已启用的试炼
-const ENABLED_TRIALS = ["magic", "pirate"]; 
-// 之后可以扩展成 ["magic", "pirate", "prisoner", "auction"]
+// 已启用的试炼：主页随机从这四个里跳
+const ENABLED_TRIALS = ["magic", "pirate", "prisoner", "auction"];
 
 // 工具：切换页面时顺便刷新装饰图
 function showScreen(id) {
@@ -23,7 +22,7 @@ function randInt(max) {
   return Math.floor(Math.random() * max) + 1;
 }
 
-// 如果图片抽到不存在的，兜底回到 1 号图（更稳一点）
+// 如果图片抽到不存在的，兜底回到 1 号图
 function setSafeSrc(img, baseName, count) {
   const idx = randInt(count);
   const src = `${baseName}${idx}.png`;
@@ -43,11 +42,9 @@ function updateDecorImages() {
   if (left && LEFT_IMAGE_COUNT > 0) {
     setSafeSrc(left, "pic_L", LEFT_IMAGE_COUNT);
   }
-
   if (right && RIGHT_IMAGE_COUNT > 0) {
     setSafeSrc(right, "pic_R", RIGHT_IMAGE_COUNT);
   }
-
   if (bottom && BOTTOM_IMAGE_COUNT > 0) {
     setSafeSrc(bottom, "pic_B", BOTTOM_IMAGE_COUNT);
   }
@@ -59,10 +56,10 @@ function roll100() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 一开始刷新一次图片
+  // 初始刷新图片
   updateDecorImages();
 
-  // 顶层首页：开始试炼按钮
+  // 主页开始按钮：随机进入四个试炼之一
   const mainStartBtn = document.getElementById("btn-main-start");
   if (mainStartBtn) {
     mainStartBtn.addEventListener("click", () => {
@@ -88,16 +85,23 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 海盗分金：简介 -> 游戏页面
+  // 海盗分金：简介 -> 输入方案
   const pirateStartBtn = document.getElementById("btn-pirate-start");
   if (pirateStartBtn) {
     pirateStartBtn.addEventListener("click", () => {
-      // 清空输入和结果
       const input = document.getElementById("pirate-input");
       const result = document.getElementById("pirate-result");
       if (input) input.value = "";
       if (result) result.textContent = "";
       showScreen("screen-pirate-game");
+    });
+  }
+
+  // 囚徒困境：简介 -> 模式选择
+  const prisonerStartBtn = document.getElementById("btn-prisoner-start");
+  if (prisonerStartBtn) {
+    prisonerStartBtn.addEventListener("click", () => {
+      showScreen("screen-prisoner-mode");
     });
   }
 
@@ -109,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 选择武器
+  // 魔法试炼：选择武器
   document
     .querySelectorAll("#screen-weapon [data-weapon]")
     .forEach((btn) => {
@@ -180,7 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (btnBoarRoll) {
     btnBoarRoll.addEventListener("click", () => {
       const roll = roll100();
-      const X = 30; // 约 30% 胜率
+      const X = 30;
       const el = document.getElementById("story-boar-result");
       if (!el) return;
       if (roll <= X) {
@@ -188,28 +192,25 @@ document.addEventListener("DOMContentLoaded", () => {
         这把你靠着<span class="highlight">运气 + 一点点脑子</span>赢了野猪王和空调大王。`;
       } else {
         el.innerHTML = `随机数：<span class="highlight">${roll}</span>（> ${X}）<br />
-        运气不好，还不动脑。<br />
-        提示：这条线本来胜率就不高，下次可以试试别的策略。`;
+        运气不好，还不动脑。下次可以换条路走走。`;
       }
     });
   }
 
-  // 故事魔杖：先控空调大王（X ≈ 38）
+  // 故事魔杖：先控空调大王（X = 38）
   const btnAcRoll = document.getElementById("btn-story-ac-roll");
   if (btnAcRoll) {
     btnAcRoll.addEventListener("click", () => {
       const roll = roll100();
-      const X = 38; // 约 38% 胜率
+      const X = 38;
       const el = document.getElementById("story-ac-result");
       if (!el) return;
       if (roll <= X) {
         el.innerHTML = `随机数：<span class="highlight">${roll}</span>（≤ ${X}）<br />
-        你先控住空调大王，再和野猪王缠斗，最后居然赢了。<br />
-        评价：<span class="highlight">算是走在正确方向上的策略。</span>`;
+        这把算是用故事魔杖硬生生抬回了一点尊严。`;
       } else {
         el.innerHTML = `随机数：<span class="highlight">${roll}</span>（> ${X}）<br />
-        这把没赢说明你既没有成为神秘强者，也暂时不是运气之子。<br />
-        建议：可以试试空放那条更抽象但更优的路线。`;
+        暂时既不是智将，也不是脸帝。再来一把？`;
       }
     });
   }
@@ -219,24 +220,22 @@ document.addEventListener("DOMContentLoaded", () => {
   if (btnPassRoll) {
     btnPassRoll.addEventListener("click", () => {
       const roll = roll100();
-      const X = 60; // 理论最优胜率
+      const X = 60;
       const el = document.getElementById("story-pass-result");
       if (!el) return;
       if (roll <= X) {
         el.innerHTML = `随机数：<span class="highlight">${roll}</span>（≤ ${X}）<br />
-        你第一轮空放，让野猪王和空调大王互相伤害，最后用故事魔杖收割战场。<br />
-        评价：<span class="highlight">抽象，但确实是最优策略，执行到位，干得漂亮。</span>`;
+        抽象的空放策略这次真的赢了。思路和运气都在线。`;
       } else {
         el.innerHTML = `随机数：<span class="highlight">${roll}</span>（> ${X}）<br />
-        虽然这把输了，但这是<span class="highlight">理论上胜率最高的策略</span>。<br />
-        评价：不错，至少思路是对的，再来一把就当刷脸。`;
+        策略是对的，这把纯属脸黑。再 roll 一次问题不大。`;
       }
     });
   }
 
-  // ========================
+  // ==========================
   // 海盗分金：提交方案逻辑
-  // ========================
+  // ==========================
   const btnPirateSubmit = document.getElementById("btn-pirate-submit");
   if (btnPirateSubmit) {
     btnPirateSubmit.addEventListener("click", () => {
@@ -247,11 +246,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const raw = inputEl.value.trim();
       if (!raw) {
         resultEl.innerHTML =
-          '至少先写点什么吧？<br />提示：格式类似 <code>98,0,1,0,1</code>';
+          '至少先写点什么吧。<br />格式示例：<code>98,0,1,0,1</code>';
         return;
       }
 
-      // 支持中文逗号
       const parts = raw.replace(/，/g, ",").split(",");
       if (parts.length !== 5) {
         resultEl.innerHTML =
@@ -263,13 +261,11 @@ document.addEventListener("DOMContentLoaded", () => {
       for (let p of parts) {
         const n = parseInt(p.trim(), 10);
         if (Number.isNaN(n)) {
-          resultEl.innerHTML =
-            "你的输入里有不是整数的东西。<br />建议先学会数数，再来当海盗。";
+          resultEl.innerHTML = "你的输入里有不是整数的东西。";
           return;
         }
         if (n < 0) {
-          resultEl.innerHTML =
-            "还想给别人负金币？这叫金融诈骗，不叫分赃。";
+          resultEl.innerHTML = "想给别人负金币？那不叫分赃，叫诈骗。";
           return;
         }
         nums.push(n);
@@ -279,13 +275,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const sum = nums.reduce((a, b) => a + b, 0);
 
       if (sum !== 100) {
-        resultEl.innerHTML = `你这五个数加起来是 <span class="highlight">${sum}</span>，不是 100。<br />
-        连总数都没数清楚，就想指挥分赃？特斯拉已经在热车了。`;
+        resultEl.innerHTML = `五个数加起来是 <span class="highlight">${sum}</span>，不是 100。<br />
+        连总数都没数清楚，就想当老大？特斯拉已经在原地热车了。`;
         return;
       }
 
-      // 正确答案：经典 5 海盗解：1 号 98、3 号 1、5 号 1
-      // 对应顺序【你, Jack, 雍, 高, 西】= [98,0,1,0,1]
+      // 正确答案：你, Jack, 雍, 高, 西 = 98,0,1,0,1
       if (
         you === 98 &&
         jack === 0 &&
@@ -295,42 +290,31 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
         resultEl.innerHTML = `
           ✅ <span class="highlight">通关！</span><br />
-          你给自己 <span class="highlight">98</span>，只用用 1 枚金币收买雍、1 枚收买西，刚好凑够 3 票通过。<br />
-          · 如果你挂了，后三人的博弈里，雍和西在后续局面里其实拿不到比 0 更好的东西，<br />
-          &nbsp;&nbsp;所以你给他们 1，他们就有动力投你赞成票。<br />
-          · Jack 和 高在后续局面里还能混点钱，所以你完全不用买他们。<br />
-          <br />
-          评价：你是真懂博弈，不是来做公益的海盗。`;
+          你给自己 98，只用 1 枚金币收买雍、1 枚收买西，凑够 3 票通过。<br />
+          在后续局面里，他们拿不到更好的，所以这 1 枚金币对他们来说是“白捡”，对你来说是“超值贿赂”。<br />
+          评价：你不是来做公益的，你是真的懂博弈。`;
         return;
       }
 
-      // ==============
-      // 四类常见错误
-      // ==============
-
-      // 1. 暴力自肥型：你拿 >=90，且没给关键票（雍、 西）任何东西
+      // 1. 暴力自肥型：你≥90，雍和西都是 0
       if (you >= 90 && yong === 0 && xi === 0) {
         resultEl.innerHTML = `
-          ❌ 暴力自肥型分配。<br />
-          你给自己塞了 <span class="highlight">${you}</span> 枚金币，关键选票雍和西一分钱没有。<br />
-          结果：他们当然希望你被特斯拉撞飞，<br />
-          &nbsp;&nbsp;下一轮说不定他们自己就能当老大，拿得更多。<br />
-          <br />
-          评价：你把大家都当傻子，但博弈论告诉你——真正被教育的是你自己。`;
+          ❌ 暴力自肥型。<br />
+          你给自己塞了 <span class="highlight">${you}</span> 枚金币，雍和西一毛没有。<br />
+          他们当然希望你被撞飞，下一轮说不定自己就能当老大。<br />
+          评价：你把别人都当傻子，结果被制度当成了傻子。`;
         return;
       }
 
-      // 2. 大家平分好兄弟型：五个人差不多一样多
+      // 2. 好兄弟平分型：五个人差不多一样多
       const maxCoin = Math.max(...nums);
       const minCoin = Math.min(...nums);
       if (maxCoin - minCoin <= 10) {
         resultEl.innerHTML = `
           ❌ 好兄弟公平分型。<br />
-          你这分配基本是“社会主义试验田”：每个人差不多都是 ${minCoin}~${maxCoin}。<br />
-          问题是：你是 1 号老大，有话语权却没用出来，<span class="highlight">既没多拿钱，又没保证别人愿意保你</span>。<br />
-          后面的海盗在后续局面里，很可能能拿到更多，自然不介意先把你送上特斯拉。<br />
-          <br />
-          评价：你适合当工会主席，不太适合当海盗老大。`;
+          你这方案基本是“兄弟齐心，其利断金，先别管我是不是要被撞飞”。<br />
+          作为 1 号老大，既没多拿钱，也没稳住自己的票。<br />
+          评价：适合当团建负责人，不太适合当海盗头子。`;
         return;
       }
 
@@ -338,15 +322,165 @@ document.addEventListener("DOMContentLoaded", () => {
       const othersMax = Math.max(jack, yong, gao, xi);
       if (othersMax > you) {
         resultEl.innerHTML = `
-          ❌ 慈善家型分配。<br />
+          ❌ 慈善家型。<br />
           有人拿的比你多：<span class="highlight">${othersMax}</span> &gt; 你的 <span class="highlight">${you}</span>。<br />
-          作为 1 号海盗，你的目标是“<span class="highlight">在活着的前提下最大化自己</span>”，不是给队友发年终奖。<br />
-          这样分下去，你既没拿到最多，又不一定能多出稳固的支持票。<br />
-          <br />
-          评价：你这是抢银行还是做公益？建议从“己利”这门课重修起。`;
+          你是出方案的人，不是来给队友发年终奖的金主爸爸。<br />
+          评价：你适合写分赃协议书，但名字写错了，应该写在“最底下一行”。`;
         return;
       }
 
-      // 4. 贿赂错人型：拼命讨好 Jack 或高，却放弃雍和西
+      // 4. 贿赂错人型：买 Jack 或高，放弃雍和西
       if ((jack > 0 || gao > 0) && yong === 0 && xi === 0) {
         resultEl.innerHTML = `
+          ❌ 贿赂错人型。<br />
+          你花金币去买 Jack 或高，却把雍和西晾在一边。<br />
+          在标准 5 海盗局面里，真正好买的是雍和西，你现在是拿钱砸那些本来就不太想帮你的人。<br />
+          评价：钱花出去了，票没买到。经典“冤大头”操作。`;
+        return;
+      }
+
+      // 兜底嘲讽
+      resultEl.innerHTML = `
+        ❌ 分配方案没命中任何已知策略。<br />
+        我都没预测到还有这种分法。<br />
+        评价：恭喜你，首创<span class="highlight">海盗界新型呆子分配方法</span>。<br />
+        建议：多想想“谁在后续局面里最惨”，他们才是最好买的票。`;
+    });
+  }
+
+  // =================================
+  // 囚徒困境：一次性 & 三轮逻辑
+  // =================================
+  // 一次性：选择按钮
+  document
+    .querySelectorAll("#screen-prisoner-one-shot [data-prison-one-choice]")
+    .forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const choice = btn.getAttribute("data-prison-one-choice");
+        // 神秘强者在一次性局里直接选择坦白
+        if (choice === "silent") {
+          showScreen("screen-prisoner-one-result-CS");
+        } else {
+          showScreen("screen-prisoner-one-result-CC");
+        }
+      });
+    });
+
+  // 一次性结果页跳三轮
+  const goRepFromCS = document.getElementById("btn-prisoner-go-repeated-from-CS");
+  if (goRepFromCS) {
+    goRepFromCS.addEventListener("click", () => {
+      resetPrisonRepeated();
+      showScreen("screen-prisoner-r1");
+    });
+  }
+  const goRepFromCC = document.getElementById("btn-prisoner-go-repeated-from-CC");
+  if (goRepFromCC) {
+    goRepFromCC.addEventListener("click", () => {
+      resetPrisonRepeated();
+      showScreen("screen-prisoner-r1");
+    });
+  }
+
+  // 三轮审讯状态
+  let prisonHistory = [];
+  let prisonTotalYou = 0;
+  let prisonTotalStrong = 0;
+
+  function resetPrisonRepeated() {
+    prisonHistory = [];
+    prisonTotalYou = 0;
+    prisonTotalStrong = 0;
+    const r2 = document.getElementById("prison-r2-prev");
+    const r3a = document.getElementById("prison-r3-prev1");
+    const r3b = document.getElementById("prison-r3-prev2");
+    const sum = document.getElementById("prison-summary-detail");
+    if (r2) r2.innerHTML = "";
+    if (r3a) r3a.innerHTML = "";
+    if (r3b) r3b.innerHTML = "";
+    if (sum) sum.innerHTML = "";
+  }
+
+  function prisonStrongChoice(round) {
+    if (round === 1) return "silent"; // 第 1 轮先给合作机会
+    if (prisonHistory.length === 0) return "silent";
+    return prisonHistory[prisonHistory.length - 1].you; // 之后复制你的上一次选择
+  }
+
+  function prisonYears(choiceYou, choiceStrong) {
+    if (choiceYou === "silent" && choiceStrong === "silent") {
+      return { you: 1, strong: 1 };
+    }
+    if (choiceYou === "confess" && choiceStrong === "silent") {
+      return { you: 0, strong: 10 };
+    }
+    if (choiceYou === "silent" && choiceStrong === "confess") {
+      return { you: 10, strong: 0 };
+    }
+    return { you: 5, strong: 5 }; // 双方坦白
+  }
+
+  function makePrisonRoundLine(r) {
+    const y = r.you === "silent" ? "沉默" : "坦白";
+    const s = r.strong === "silent" ? "沉默" : "坦白";
+    return `第 ${r.round} 轮：你选择 <span class="highlight">${y}</span>，对方选择 <span class="highlight">${s}</span> → 你 ${r.youYears} 年，对方 ${r.strongYears} 年。`;
+  }
+
+  function makePrisonOverallComment() {
+    const choices = prisonHistory.map((r) => r.you);
+    const allSilent = choices.every((c) => c === "silent");
+    const allConfess = choices.every((c) => c === "confess");
+
+    if (allSilent) {
+      return `你三轮都选择沉默，给了合作结构最好的机会。<br />
+      可惜现实世界里，遇到的未必都是“先合作、再跟随”的神秘强者。`;
+    }
+    if (allConfess) {
+      return `你三轮都选择坦白，彻底放弃了任何互信的可能。<br />
+      评价：你非常稳定，非常谨慎，也非常适合一个人过。`;
+    }
+    if (choices[0] === "confess" && choices.slice(1).includes("silent")) {
+      return `你第一轮就先扎了一刀，后面又尝试恢复合作。<br />
+      评价：典型“先自保再补救”型玩家。现实里，这种人朋友不多，但都很谨慎。`;
+    }
+    return `你的三轮选择时而沉默、时而坦白，在探索“信任”和“防备”之间的平衡。<br />
+    囚徒困境里，短期算计和长期关系，总是在互相拉扯。`;
+  }
+
+  // 模式选择页：三轮审讯按钮
+  const btnPrisonerRepeated = document.getElementById("btn-prisoner-repeated");
+  if (btnPrisonerRepeated) {
+    btnPrisonerRepeated.addEventListener("click", () => {
+      resetPrisonRepeated();
+      showScreen("screen-prisoner-r1");
+    });
+  }
+
+  // 三轮审讯：每轮选择
+  document
+    .querySelectorAll("[data-prison-round]")
+    .forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const round = parseInt(btn.getAttribute("data-prison-round"), 10);
+        const choiceYou = btn.getAttribute("data-prison-choice");
+        const choiceStrong = prisonStrongChoice(round);
+        const years = prisonYears(choiceYou, choiceStrong);
+
+        prisonHistory.push({
+          round,
+          you: choiceYou,
+          strong: choiceStrong,
+          youYears: years.you,
+          strongYears: years.strong,
+        });
+        prisonTotalYou += years.you;
+        prisonTotalStrong += years.strong;
+
+        if (round === 1) {
+          const prev = document.getElementById("prison-r2-prev");
+          if (prev) prev.innerHTML = makePrisonRoundLine(prisonHistory[0]);
+          showScreen("screen-prisoner-r2");
+        } else if (round === 2) {
+          const p1 = document.getElementById("prison-r3-prev1");
+          const p2 = document.getElementById("prison-r3-prev2");
+          if (p1) p1.innerH
