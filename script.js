@@ -483,4 +483,182 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (round === 2) {
           const p1 = document.getElementById("prison-r3-prev1");
           const p2 = document.getElementById("prison-r3-prev2");
-          if (p1) p1.innerH
+          if (p1) p1.innerHTML = makePrisonRoundLine(prisonHistory[0]);
+          if (p2) p2.innerHTML = makePrisonRoundLine(prisonHistory[1]);
+          showScreen("screen-prisoner-r3");
+        } else if (round === 3) {
+          const sumEl = document.getElementById("prison-summary-detail");
+          if (sumEl) {
+            let html = "";
+            prisonHistory.forEach((r) => {
+              html += makePrisonRoundLine(r) + "<br />";
+            });
+            html += `<br />三轮合计：你被判 <span class="highlight">${prisonTotalYou}</span> 年，对方 <span class="highlight">${prisonTotalStrong}</span> 年。<br /><br />`;
+            html += makePrisonOverallComment();
+            sumEl.innerHTML = html;
+          }
+          showScreen("screen-prisoner-summary");
+        }
+      });
+    });
+
+  // 三轮总结页：再来一次
+  const btnPrisonerRestartRepeated = document.getElementById(
+    "btn-prisoner-restart-repeated"
+  );
+  if (btnPrisonerRestartRepeated) {
+    btnPrisonerRestartRepeated.addEventListener("click", () => {
+      resetPrisonRepeated();
+      showScreen("screen-prisoner-r1");
+    });
+  }
+
+  // ======================
+  // 陷阱拍卖：多轮出价
+  // ======================
+  const auctionValue = 10;
+  let auctionYourBid = 0;
+  let auctionStrongBid = 0;
+
+  function resetAuction() {
+    auctionYourBid = 0;
+    auctionStrongBid = 0;
+    const status = document.getElementById("auction-status");
+    const res = document.getElementById("auction-result");
+    const input = document.getElementById("auction-input");
+    if (status) {
+      status.innerHTML =
+        "当前还没有任何出价。标的是一张 10 元购物卡。<br />" +
+        "你可以出价整数元，或输入 0 表示这轮不出价。所有出过价的人最后都要支付自己最高出价。";
+    }
+    if (res) res.innerHTML = "";
+    if (input) input.value = "";
+  }
+
+  const auctionStartBtn = document.getElementById("btn-auction-start");
+  if (auctionStartBtn) {
+    auctionStartBtn.addEventListener("click", () => {
+      resetAuction();
+      showScreen("screen-auction-game");
+    });
+  }
+
+  const btnAuctionBid = document.getElementById("btn-auction-bid");
+  if (btnAuctionBid) {
+    btnAuctionBid.addEventListener("click", () => {
+      const input = document.getElementById("auction-input");
+      const status = document.getElementById("auction-status");
+      const result = document.getElementById("auction-result");
+      if (!input || !status || !result) return;
+
+      const raw = input.value.trim();
+      if (raw === "") {
+        result.innerHTML = "先写一个整数出价，或者 0 表示不出价。";
+        return;
+      }
+
+      const bid = parseInt(raw, 10);
+      if (Number.isNaN(bid) || bid < 0) {
+        result.innerHTML = "出价需要是一个大于等于 0 的整数。";
+        return;
+      }
+
+      // 首轮不出价：旁观模式
+      if (bid === 0 && auctionYourBid === 0 && auctionStrongBid === 0) {
+        auctionStrongBid = 1;
+        status.innerHTML = `
+          你选择不出价。<br />
+          神秘强者出价 <span class="highlight">1 元</span>，拿走了 10 元购物卡。<br />
+          最终需要支付：你 0 元，对方 1 元。`;
+        result.innerHTML =
+          "评价：你站在坑外面，看别人示范了一次“用 1 元买 10 元”的实验。";
+        return;
+      }
+
+      if (bid <= auctionYourBid) {
+        result.innerHTML = `你的出价必须高于你之前的最高出价（当前是 ${auctionYourBid}）。`;
+        return;
+      }
+
+      if (bid <= auctionStrongBid) {
+        result.innerHTML = `当前神秘强者最高出价是 ${auctionStrongBid}，你的出价需要更高才算新的出价。`;
+        return;
+      }
+
+      // 有效新出价：对手自动出价 X+1
+      auctionYourBid = bid;
+      auctionStrongBid = auctionYourBid + 1;
+
+      status.innerHTML = `
+        当前局面：<br />
+        · 你最高出价：<span class="highlight">${auctionYourBid}</span> 元<br />
+        · 神秘强者最高出价：<span class="highlight">${auctionStrongBid}</span> 元<br />
+        · 标的价值：<span class="highlight">${auctionValue}</span> 元<br />
+        拍卖仍在进行中，你可以继续加价，或者点击“认输 / 停止”。`;
+
+      result.innerHTML = "";
+      input.value = "";
+    });
+  }
+
+  const btnAuctionGiveup = document.getElementById("btn-auction-giveup");
+  if (btnAuctionGiveup) {
+    btnAuctionGiveup.addEventListener("click", () => {
+      const status = document.getElementById("auction-status");
+      const result = document.getElementById("auction-result");
+      if (!status || !result) return;
+
+      // 完全没出价就认输
+      if (auctionYourBid === 0 && auctionStrongBid === 0) {
+        status.innerHTML = "你选择认输，但其实你还没真正出过价。";
+        result.innerHTML = `
+          最终结果：<br />
+          · 你支付：<span class="highlight">0</span> 元，什么也没拿到；<br />
+          · 神秘强者也没有出价，购物卡仍然在商家手里。<br /><br />
+          评价：你是那种看到标题就点右上角的人，既没赚钱，也没亏钱。`;
+        return;
+      }
+
+      // 你 0，对方 >0（旁观模式结束）
+      if (auctionYourBid === 0 && auctionStrongBid > 0) {
+        const oppNet = auctionStrongBid - auctionValue;
+        status.innerHTML = `
+          最终结果：<br />
+          · 你支付：<span class="highlight">0</span> 元；<br />
+          · 神秘强者支付：<span class="highlight">${auctionStrongBid}</span> 元，拿到 10 元购物卡。`;
+        result.innerHTML = `
+          对方的净结果：${auctionStrongBid} - 10 = <span class="highlight">${oppNet}</span> 元。<br />
+          评价：你在旁边看了一场“用小钱换大钱”的奇怪拍卖，自己没被卷进去，还算理智。`;
+        return;
+      }
+
+      // 一般情况：你出过价，对方始终跟到你 +1，你认输
+      const yourPay = auctionYourBid;
+      const oppPay = auctionStrongBid;
+      const yourNet = -yourPay;
+      const oppNet = oppPay - auctionValue;
+
+      status.innerHTML = `
+        拍卖结束：<br />
+        · 你最高出价：<span class="highlight">${yourPay}</span> 元，最终一无所获；<br />
+        · 神秘强者最高出价：<span class="highlight">${oppPay}</span> 元，拿到 10 元购物卡。`;
+
+      let comment = "";
+      if (yourPay <= 10) {
+        comment = `你名义上只亏了 <span class="highlight">${-yourNet}</span> 元，还算浅尝辄止。`;
+      } else if (yourPay <= 20) {
+        comment = `你为了 10 元卡，愿意掏出 <span class="highlight">${yourPay}</span> 元，净亏 <span class="highlight">${-yourNet}</span> 元。情绪已经明显接管钱包。`;
+      } else {
+        comment = `你把一场 10 元的拍卖，玩成了几十元的情绪充值，净亏 <span class="highlight">${-yourNet}</span> 元。`;
+      }
+
+      result.innerHTML = `
+        从账面来看：<br />
+        · 你的净结果：<span class="highlight">${yourNet}</span> 元；<br />
+        · 神秘强者的净结果：<span class="highlight">${oppNet}</span> 元。<br /><br />
+        ${comment}<br /><br />
+        总结：所谓“陷阱拍卖”，就是用一个小小的标的，慢慢把人锁进“再加一点就不亏”的循环里，<br />
+        直到大家一起发现——原来真正被拍卖的是理智。`;
+    });
+  }
+});
