@@ -91,6 +91,17 @@ main {
   margin: 14px 0;
 }
 
+/* 输入框 */
+.text-input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #c5ddff;
+  font-size: 14px;
+  margin: 6px 0 10px;
+}
+
+/* 按钮 */
 .btn {
   display: inline-block;
   margin-top: 6px;
@@ -146,11 +157,11 @@ main {
 .decor-img {
   position: fixed;
   top: 8px;
-  width: 150px; /* 可以再放大缩小 */
+  width: 150px;
   height: auto;
   object-fit: contain;
   z-index: 10;
-  pointer-events: none; /* 不挡住按钮点击 */
+  pointer-events: none;
 }
 
 .decor-left {
@@ -171,7 +182,7 @@ footer {
 }
 
 .decor-bottom {
-  max-width: 240px;  /* 底部图片 1.5 倍左右大小 */
+  max-width: 240px;
   max-height: 180px;
   width: auto;
   height: auto;
