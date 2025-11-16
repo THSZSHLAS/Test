@@ -2,21 +2,53 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>神秘强者模式 · 魔法师学院博弈对决</title>
+  <title>神秘强者试炼场</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="app">
+    <!-- 左上 / 右上 装饰图 -->
+    <img
+      id="img-left"
+      class="decor-img decor-left"
+      src="pic_L1.png"
+      alt="左上角图片"
+    />
+    <img
+      id="img-right"
+      class="decor-img decor-right"
+      src="pic_R1.png"
+      alt="右上角图片"
+    />
+
     <header>
-      <h1>神秘强者模式 · 魔法师学院博弈对决</h1>
+      <h1>神秘强者试炼场</h1>
     </header>
 
     <main>
-      <!-- 首页：介绍 + 开始按钮 -->
+      <!-- 顶层首页：一个按钮，随机进入某个试炼 -->
       <section id="screen-home" class="screen active">
         <div class="card">
-          <h2>魔法师学院三人决斗</h2>
+          <h2>欢迎来到神秘强者试炼</h2>
+          <p class="story">
+            这里是行为经济学 + 博弈论 + 邪门脑洞的综合修炼场。<br />
+            每次点击，都有可能被传送到不同的试炼世界。
+          </p>
+          <p class="story">
+            当前已开放：<span class="highlight">魔法试炼</span>。<br />
+            预留中：海盗分金 · 囚徒困境 · 陷阱拍卖。
+          </p>
+          <button id="btn-main-start" class="btn primary">
+            开始神秘强者试炼
+          </button>
+        </div>
+      </section>
+
+      <!-- 魔法试炼：简介页 -->
+      <section id="screen-magic-intro" class="screen">
+        <div class="card">
+          <h2>魔法试炼 · 三人决斗</h2>
           <p class="story">
             你代表魔法师学院出战，对手是：
             <br />· 野猪王 —— 把你变成野猪，成功率 70%；
@@ -28,22 +60,67 @@
             如果第一轮结束所有人都还站着，三个人一起变成“撒头股”，谁都不赢。
           </p>
           <p class="story">
-            现在，你有三件武器可以选择：
+            你有三件武器可以选择：
             <br />1）故事魔杖：60% 概率把一个对手用故事控到不能动；
             <br />2）高之魅惑：80% 概率让对手大脑宕机；
             <br />3）特斯拉之力：100% 召唤来自 Blue mountain 的特斯拉，直接把人撞飞走。
           </p>
-          <button id="btn-start" class="btn primary">开始对局</button>
+          <button id="btn-magic-start" class="btn primary">
+            进入魔法试炼
+          </button>
+          <button class="btn text" data-goto="screen-home">← 回到试炼首页</button>
         </div>
       </section>
 
-      <!-- 选择武器 -->
+      <!-- 预留：海盗分金 -->
+      <section id="screen-pirate-intro" class="screen">
+        <div class="card">
+          <h2>海盗分金 · 试炼（预留）</h2>
+          <p class="story">
+            这里将来会是经典的“海盗分金游戏”，每个海盗都想保命又想拿最多金子。<br />
+            暂未开放，敬请期待后续更新。
+          </p>
+          <button class="btn primary" data-goto="screen-home">
+            返回试炼首页
+          </button>
+        </div>
+      </section>
+
+      <!-- 预留：囚徒困境 -->
+      <section id="screen-prisoner-intro" class="screen">
+        <div class="card">
+          <h2>囚徒困境 · 试炼（预留）</h2>
+          <p class="story">
+            将来这里会有一次性 & 重复博弈版的囚徒困境，你可以体验“坦白”和“沉默”的各种结局。<br />
+            暂未开放，敬请期待。
+          </p>
+          <button class="btn primary" data-goto="screen-home">
+            返回试炼首页
+          </button>
+        </div>
+      </section>
+
+      <!-- 预留：陷阱拍卖 -->
+      <section id="screen-auction-intro" class="screen">
+        <div class="card">
+          <h2>陷阱拍卖 · 试炼（预留）</h2>
+          <p class="story">
+            这里将来会是 All-pay Auction / Dollar Auction，教你如何在拍卖中把钱输得干干净净。<br />
+            暂未开放，先把肝留着。
+          </p>
+          <button class="btn primary" data-goto="screen-home">
+            返回试炼首页
+          </button>
+        </div>
+      </section>
+
+      <!-- 魔法试炼：选择武器 -->
       <section id="screen-weapon" class="screen">
         <div class="card">
           <h2>请选择你的武器</h2>
           <p class="story">
             你的对手都是“神秘强者”，他们都会做出让自己胜率最大化的选择。<br />
-            那么，你该选哪一把武器？
+            你选错武器，很可能当场被教育。
           </p>
           <div class="choice-group">
             <button class="btn secondary" data-weapon="tesla">
@@ -56,60 +133,119 @@
               故事魔杖（成功率 60%）
             </button>
           </div>
-          <button class="btn text" data-goto="screen-home">← 回到介绍</button>
+          <button class="btn text" data-goto="screen-magic-intro">
+            ← 回到魔法试炼简介
+          </button>
         </div>
       </section>
 
-      <!-- 特斯拉之力分支 -->
-      <section id="screen-tesla" class="screen">
+      <!-- 特斯拉之力：选择攻击目标 -->
+      <section id="screen-tesla-choose" class="screen">
         <div class="card">
-          <h2>特斯拉之力 · 结果</h2>
+          <h2>特斯拉之力 · 选择目标</h2>
           <p class="story">
-            你选择了<span class="highlight">特斯拉之力</span>，成功率 100%。<br />
-            作为理性选手，你会优先处理威胁最大的
-            <span class="highlight">空调大王（90%）</span>。
+            你选择了<span class="highlight">特斯拉之力</span>，命中率 100%。<br />
+            你可以一杖把其中一位对手直接撞飞出局：
+          </p>
+          <div class="choice-group">
+            <button class="btn secondary" data-tesla-target="ac">
+              先撞飞空调大王（90% 吹晕你）
+            </button>
+            <button class="btn secondary" data-tesla-target="boar">
+              先撞飞野猪王（70% 变猪术）
+            </button>
+          </div>
+          <p class="small">
+            看起来特斯拉之力无敌，但在这局博弈里，它其实是一个<span class="highlight">假王者</span>。
+          </p>
+          <button class="btn text" data-goto="screen-weapon">
+            ← 换个武器
+          </button>
+        </div>
+      </section>
+
+      <!-- 特斯拉：先撞飞空调大王 -->
+      <section id="screen-tesla-ac" class="screen">
+        <div class="card">
+          <h2>特斯拉之力 · 先撞空调大王</h2>
+          <p class="story">
+            你一杖下去，把<span class="highlight">空调大王</span>直接撞飞到 Blue mountain 的另一边。
+            大威胁解决，看起来很合理。
           </p>
           <p class="story">
-            · 你一杖下去，空调大王被特斯拉撞飞到 Blue mountain 的某座山上，彻底退出战场。<br />
-            · 接下来轮到<span class="highlight">野猪王</span> —— 他有 70% 概率把你变成野猪。
+            接下来轮到<span class="highlight">野猪王</span>行动，他有 70% 概率把你变成野猪。<br />
+            · 你已经没有防御手段；<br />
+            · 一旦被变成猪，这局就宣告结束。
           </p>
           <p class="story">
-            也就是说，在这个选择下，即使你选了<span class="highlight">命中率 100% 的武器</span>，
-            你最后的胜率只有大约 <span class="highlight">30%</span>，
-            而野猪王有 <span class="highlight">70%</span> 概率把你变成猪。
+            也就是说，你这条路线只有<span class="highlight">30%</span> 的胜率。<br />
+            特斯拉之力命中率虽然 100%，但你只能解决一个敌人，
+            <span class="highlight">后手的野猪王反而成了大赢家</span>。
           </p>
-          <p class="story">
-            这把我们直接当作你已经被野猪王秒了。<br />
-            <span class="taunt">评价：菜，就多练。</span>
+          <p class="taunt">
+            评价：看起来最帅的技能，实际是最容易被骗着选的那个。菜，就多练。
           </p>
           <button class="btn primary" data-goto="screen-weapon">
             再想想，换个武器
           </button>
-          <button class="btn text" data-goto="screen-home">← 回到首页</button>
+          <button class="btn text" data-goto="screen-magic-intro">
+            ← 回到魔法试炼简介
+          </button>
         </div>
       </section>
 
-      <!-- 高之魅惑：选择先打谁 -->
+      <!-- 特斯拉：先撞飞野猪王 -->
+      <section id="screen-tesla-boar" class="screen">
+        <div class="card">
+          <h2>特斯拉之力 · 先撞野猪王</h2>
+          <p class="story">
+            你选择先把<span class="highlight">野猪王</span>撞飞，感觉是“先清理 70% 风险”。<br />
+            结果场上只剩你和<span class="highlight">空调大王</span>。
+          </p>
+          <p class="story">
+            接下来轮到空调大王，他有 90% 概率把你吹晕。<br />
+            · 你没有任何额外防护；<br />
+            · 被吹晕 = 当场出局。
+          </p>
+          <p class="story">
+            这条路线，你的胜率只有<span class="highlight">10%</span> 左右，比刚才那条还惨。<br />
+            你把 100% 命中率的特斯拉，变成了<span class="highlight">“把自己送到 90% 风险面前”</span>。
+          </p>
+          <p class="taunt">
+            评价：你是那种看到数字 70% 就本能想先干掉它的人，结果被 90% 一巴掌扇回现实。
+          </p>
+          <button class="btn primary" data-goto="screen-weapon">
+            再想想，换个武器
+          </button>
+          <button class="btn text" data-goto="screen-magic-intro">
+            ← 回到魔法试炼简介
+          </button>
+        </div>
+      </section>
+
+      <!-- 高之魅惑：选择目标 -->
       <section id="screen-charm-choose" class="screen">
         <div class="card">
           <h2>高之魅惑 · 选择目标</h2>
           <p class="story">
             你选择了<span class="highlight">高之魅惑</span>，成功率 80%。<br />
-            你必须先魅惑一个对手：
+            听起来很强，但你必须先决定要魅惑谁：
           </p>
           <div class="choice-group">
             <button class="btn secondary" data-charm-target="ac">
               先魅惑空调大王（90% 吹晕你）
             </button>
             <button class="btn secondary" data-charm-target="boar">
-              先魅惑野猪王（70% 把你变成猪）
+              先魅惑野猪王（70% 变猪术）
             </button>
           </div>
-          <button class="btn text" data-goto="screen-weapon">← 换个武器</button>
+          <button class="btn text" data-goto="screen-weapon">
+            ← 换个武器
+          </button>
         </div>
       </section>
 
-      <!-- 高之魅惑：先打空调大王 -->
+      <!-- 高之魅惑：先魅惑空调大王 -->
       <section id="screen-charm-ac" class="screen">
         <div class="card">
           <h2>高之魅惑 · 先魅惑空调大王</h2>
@@ -119,21 +255,26 @@
             · 接下来轮到<span class="highlight">野猪王</span>，他有 70% 概率把你变成野猪。
           </p>
           <p class="story">
-            即使你第一下成功魅惑了空调大王，后面你仍然要面对
-            <span class="highlight">70% 概率的野猪光速制裁</span>。
+            所以这条线的本质是：<br />
+            你用 80% 的概率去消掉一个对你有 90% 威胁的人，<br />
+            然后把自己交到一个 70% 威胁的人手里。
           </p>
           <p class="story">
-            这条线大致也是输多赢少，只是比特斯拉稍微好看一点。<br />
-            <span class="taunt">评价：这是“看上去很强，实战略亏”的经典技能。</span>
+            结果：你仍然<span class="highlight">输多赢少</span>，只是数值比特斯拉好看一点点。
+          </p>
+          <p class="taunt">
+            评价：表面是精算，实质是“换个方式被教育”。
           </p>
           <button class="btn primary" data-goto="screen-weapon">
             再换个武器试试
           </button>
-          <button class="btn text" data-goto="screen-home">← 回到首页</button>
+          <button class="btn text" data-goto="screen-magic-intro">
+            ← 回到魔法试炼简介
+          </button>
         </div>
       </section>
 
-      <!-- 高之魅惑：先打野猪王 -->
+      <!-- 高之魅惑：先魅惑野猪王 -->
       <section id="screen-charm-boar" class="screen">
         <div class="card">
           <h2>高之魅惑 · 先魅惑野猪王</h2>
@@ -142,29 +283,30 @@
             · 假设你成功了，现在场上只剩你和<span class="highlight">空调大王</span>。
           </p>
           <p class="story">
-            接下来轮到空调大王，他有 <span class="highlight">90%</span> 概率把你吹晕。<br />
-            简单说：你基本一定会被冷空调教做人。
-          </p>
-          <p class="story">
-            所以高之魅惑这条线，无论先打谁，<br />
-            都是那种<span class="highlight">“看起来好像挺强，实际上很难赢”</span>的陷阱选择。
+            接下来轮到空调大王，他有 90% 概率把你吹晕。<br />
+            换句话说，这条线基本是：<span class="highlight">“你辛苦秒了一个对手，只是为了让另一个对手来秒你。”</span>
           </p>
           <p class="taunt">
-            评价：你属于“数值看着很猛，但系统是站在对手那边”的那种玩家。
+            评价：高之魅惑在这局博弈里，是一个<strong>非常好看、但非常坑新人的技能</strong>。
           </p>
           <button class="btn primary" data-goto="screen-weapon">
             再换个武器试试
           </button>
-          <button class="btn text" data-goto="screen-home">← 回到首页</button>
+          <button class="btn text" data-goto="screen-magic-intro">
+            ← 回到魔法试炼简介
+          </button>
         </div>
       </section>
 
-      <!-- 故事魔杖：选择三种策略 -->
+      <!-- 故事魔杖：三种策略 -->
       <section id="screen-story-choose" class="screen">
         <div class="card">
           <h2>故事魔杖 · 选择策略</h2>
           <p class="story">
             你选择了<span class="highlight">故事魔杖</span>，命中率 60%。<br />
+            看起来最平平无奇，但它允许你玩一些真正的博弈。
+          </p>
+          <p class="story">
             你有三种策略：
           </p>
           <div class="choice-group">
@@ -179,24 +321,26 @@
             </button>
           </div>
           <p class="small">
-            针对 ① 和 ②，我们会计算你的胜率 X，并用 1-100 的随机数决定这把你赢不赢。<br />
-            对于 ③，是一条<span class="highlight">看起来抽象，但其实是最优策略</span>的路线。
+            针对 ① 和 ②，我们用胜率 X（约 30% / 38%）加上 1–100 随机数，决定你这局是智胜还是靠脸。<br />
+            对于 ③，这是<span class="highlight">最优策略</span>，胜率按 60% 算。
           </p>
-          <button class="btn text" data-goto="screen-weapon">← 换个武器</button>
+          <button class="btn text" data-goto="screen-weapon">
+            ← 换个武器
+          </button>
         </div>
       </section>
 
-      <!-- 故事魔杖：打野猪王（随机数） -->
+      <!-- 故事魔杖：先控野猪王 -->
       <section id="screen-story-boar" class="screen">
         <div class="card">
           <h2>故事魔杖 · 先控野猪王</h2>
           <p class="story">
             你决定先对<span class="highlight">野猪王</span>使用故事魔杖。<br />
             · 命中率：60%。<br />
-            · 即使他被控住，后面还有<span class="highlight">空调大王 90%</span> 的冷风制裁。<br />
+            · 即使他被控住，后面还有<span class="highlight">空调大王 90%</span> 的冷风制裁。
           </p>
           <p class="story">
-            在合理的推理下，你这条路线最终大约有
+            在合理的推理下，这条路线最终大约有
             <span class="highlight">30%</span> 的胜率（X = 30）。<br />
             现在我们来用随机数测试一下这把你是靠脑子赢，还是靠运气赢。
           </p>
@@ -207,21 +351,23 @@
           <button class="btn text" data-goto="screen-story-choose">
             ← 回到故事魔杖策略选择
           </button>
-          <button class="btn text" data-goto="screen-home">← 回到首页</button>
+          <button class="btn text" data-goto="screen-magic-intro">
+            ← 回到魔法试炼简介
+          </button>
         </div>
       </section>
 
-      <!-- 故事魔杖：打空调大王（随机数） -->
+      <!-- 故事魔杖：先控空调大王 -->
       <section id="screen-story-ac" class="screen">
         <div class="card">
           <h2>故事魔杖 · 先控空调大王</h2>
           <p class="story">
             你决定先对<span class="highlight">空调大王</span>使用故事魔杖。<br />
             · 命中率：60%。<br />
-            · 成功的话，后面主要要和<span class="highlight">野猪王</span>对线。
+            · 成功的话，后面主要是和<span class="highlight">野猪王</span>纠缠。
           </p>
           <p class="story">
-            在合理推理下，你这条路线最终大约有
+            在合理推理下，这条路线最终大约有
             <span class="highlight">38%</span> 的胜率（X ≈ 38）。<br />
             现在用随机数看看这把你能不能当场翻盘。
           </p>
@@ -232,25 +378,27 @@
           <button class="btn text" data-goto="screen-story-choose">
             ← 回到故事魔杖策略选择
           </button>
-          <button class="btn text" data-goto="screen-home">← 回到首页</button>
+          <button class="btn text" data-goto="screen-magic-intro">
+            ← 回到魔法试炼简介
+          </button>
         </div>
       </section>
 
-      <!-- 故事魔杖：空放策略（最优） -->
+      <!-- 故事魔杖：空放最优策略 -->
       <section id="screen-story-pass" class="screen">
         <div class="card">
-          <h2>故事魔杖 · 空放策略</h2>
+          <h2>故事魔杖 · 空放策略（最优）</h2>
           <p class="story">
             你选择了<span class="highlight">第一轮空放</span>，假装在吟唱一个超长的故事：<br />
             你什么都不打，只是在那边疯狂讲故事。
           </p>
           <p class="story">
-            · 野猪王如果也空放，那他大概率会被<span class="highlight">空调大王</span>先手吹死。<br />
+            · 野猪王如果也空放，那他大概率会被<span class="highlight">空调大王</span>先手吹死；<br />
             · 所以理性的野猪王会先手对空调大王出手，把大威胁解决掉。
           </p>
           <p class="story">
-            假设野猪王成功把空调大王变成猪，这一轮结束后就只剩你和野猪王。<br />
-            这时候轮到你行动，你用<span class="highlight">故事魔杖</span>，有
+            假设野猪王成功把空调大王变成野猪，这一轮结束后只剩你和野猪王。<br />
+            轮到你行动，你用<span class="highlight">故事魔杖</span>，有
             <span class="highlight">60%</span> 的概率赢下最终决斗。
           </p>
           <p class="story">
@@ -264,10 +412,22 @@
           <button class="btn text" data-goto="screen-story-choose">
             ← 回到故事魔杖策略选择
           </button>
-          <button class="btn text" data-goto="screen-home">← 回到首页</button>
+          <button class="btn text" data-goto="screen-magic-intro">
+            ← 回到魔法试炼简介
+          </button>
         </div>
       </section>
     </main>
+
+    <!-- 底部居中装饰图 -->
+    <footer>
+      <img
+        id="img-bottom"
+        class="decor-bottom"
+        src="pic_B1.png"
+        alt="底部图片"
+      />
+    </footer>
   </div>
 
   <script src="script.js"></script>
