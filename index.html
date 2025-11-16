@@ -38,8 +38,8 @@
           <p class="story">
             当前已开放：<span class="highlight">魔法试炼 · 海盗分金 · 囚徒困境 · 陷阱拍卖</span>
           </p>
-          <button id="btn-main-start" class="btn primary" onclick="startMysteryTrial()">
-           开始神秘强者试炼
+          <button id="btn-main-start" class="btn primary">
+            开始神秘强者试炼
           </button>
         </div>
       </section>
@@ -572,4 +572,124 @@
               第 2 轮选择沉默
             </button>
             <button class="btn secondary" data-prison-round="2" data-prison-choice="confess">
-              第 2 轮选
+              第 2 轮选择坦白
+            </button>
+          </div>
+          <button class="btn text" data-goto="screen-prisoner-mode">
+            ← 返回模式选择
+          </button>
+        </div>
+      </section>
+
+      <!-- 囚徒困境：三轮 · 第 3 轮 -->
+      <section id="screen-prisoner-r3" class="screen">
+        <div class="card">
+          <h2>三轮审讯 · 第 3 轮</h2>
+          <p id="prison-r3-prev1" class="story"></p>
+          <p id="prison-r3-prev2" class="story"></p>
+          <p class="story">
+            现在是第 <span class="highlight">3</span> 轮审讯。<br />
+            这是最后一次选择。
+          </p>
+          <div class="choice-group">
+            <button class="btn secondary" data-prison-round="3" data-prison-choice="silent">
+              第 3 轮选择沉默
+            </button>
+            <button class="btn secondary" data-prison-round="3" data-prison-choice="confess">
+              第 3 轮选择坦白
+            </button>
+          </div>
+          <button class="btn text" data-goto="screen-prisoner-mode">
+            ← 返回模式选择
+          </button>
+        </div>
+      </section>
+
+      <!-- 囚徒困境：三轮 · 总结 -->
+      <section id="screen-prisoner-summary" class="screen">
+        <div class="card">
+          <h2>三轮审讯 · 总结</h2>
+          <div id="prison-summary-detail" class="story"></div>
+          <button class="btn primary" id="btn-prisoner-restart-repeated">
+            再玩一次三轮审讯
+          </button>
+          <button class="btn text" data-goto="screen-prisoner-mode">
+            ← 返回模式选择
+          </button>
+          <button class="btn text" data-goto="screen-home">
+            ← 返回试炼首页
+          </button>
+        </div>
+      </section>
+
+      <!-- 陷阱拍卖：简介 -->
+      <section id="screen-auction-intro" class="screen">
+        <div class="card">
+          <h2>陷阱拍卖 · 说明</h2>
+          <p class="story">
+            有一张面值 <span class="highlight">10 元</span> 的购物卡，正在拍卖。<br />
+            规则很简单：
+          </p>
+          <p class="story">
+            · 谁出价最高，谁拿到购物卡；<br />
+            · <span class="highlight">所有出过价的人</span>，都要支付自己最高出价。
+          </p>
+          <p class="story">
+            你和一位神秘强者参加这场拍卖。<br />
+            你可以多轮出价，也可以在任何时刻认输。
+          </p>
+          <button id="btn-auction-start" class="btn primary">
+            进入拍卖
+          </button>
+          <button class="btn text" data-goto="screen-home">
+            ← 返回试炼首页
+          </button>
+        </div>
+      </section>
+
+      <!-- 陷阱拍卖：出价区 -->
+      <section id="screen-auction-game" class="screen">
+        <div class="card">
+          <h2>陷阱拍卖 · 出价区</h2>
+          <p class="story">
+            标的是一张面值 <span class="highlight">10 元</span> 的购物卡。<br />
+            谁出价最高谁拿卡，但所有出过价的人都要付出自己的最高出价。
+          </p>
+          <p id="auction-status" class="story"></p>
+          <input
+            id="auction-input"
+            type="text"
+            class="text-input"
+            placeholder="请输入你的出价（整数元），或 0 表示这轮不出价"
+          />
+          <button id="btn-auction-bid" class="btn primary">
+            出价
+          </button>
+          <button id="btn-auction-giveup" class="btn secondary">
+            认输 / 停止
+          </button>
+          <p id="auction-result" class="story result-text"></p>
+          <button class="btn text" data-goto="screen-auction-intro">
+            ← 返回拍卖简介
+          </button>
+          <button class="btn text" data-goto="screen-home">
+            ← 返回试炼首页
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- 底部居中装饰图 -->
+    <footer>
+      <img
+        id="img-bottom"
+        class="decor-bottom"
+        src="pic_B1.png"
+        alt="底部图片"
+      />
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
