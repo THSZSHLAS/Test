@@ -4,7 +4,23 @@ const RIGHT_IMAGE_COUNT = 2;  // pic_R1.png ~ pic_R2.png
 const BOTTOM_IMAGE_COUNT = 3; // pic_B1.png ~ pic_B3.png
 
 // 已启用的试炼：主页随机从这四个里跳
+// 已启用的试炼：主页随机从这四个里跳
 const ENABLED_TRIALS = ["magic", "pirate", "prisoner", "auction"];
+
+// 全局函数：主页按钮点击时调用（也可以直接在 HTML 里 onclick 调用）
+function startMysteryTrial() {
+  const trial =
+    ENABLED_TRIALS[Math.floor(Math.random() * ENABLED_TRIALS.length)];
+  if (trial === "magic") {
+    showScreen("screen-magic-intro");
+  } else if (trial === "pirate") {
+    showScreen("screen-pirate-intro");
+  } else if (trial === "prisoner") {
+    showScreen("screen-prisoner-intro");
+  } else if (trial === "auction") {
+    showScreen("screen-auction-intro");
+  }
+}
 
 // 工具：切换页面时顺便刷新装饰图
 function showScreen(id) {
@@ -61,21 +77,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 主页开始按钮：随机进入四个试炼之一
   const mainStartBtn = document.getElementById("btn-main-start");
-  if (mainStartBtn) {
-    mainStartBtn.addEventListener("click", () => {
-      const trial =
-        ENABLED_TRIALS[Math.floor(Math.random() * ENABLED_TRIALS.length)];
-      if (trial === "magic") {
-        showScreen("screen-magic-intro");
-      } else if (trial === "pirate") {
-        showScreen("screen-pirate-intro");
-      } else if (trial === "prisoner") {
-        showScreen("screen-prisoner-intro");
-      } else if (trial === "auction") {
-        showScreen("screen-auction-intro");
-      }
-    });
-  }
+if (mainStartBtn) {
+  mainStartBtn.addEventListener("click", startMysteryTrial);
+}
 
   // 魔法试炼简介 -> 选择武器
   const magicStartBtn = document.getElementById("btn-magic-start");
