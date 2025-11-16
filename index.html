@@ -36,8 +36,8 @@
             每次点击，都有可能被传送到不同的试炼世界。
           </p>
           <p class="story">
-            当前已开放：<span class="highlight">魔法试炼</span>。<br />
-            预留中：海盗分金 · 囚徒困境 · 陷阱拍卖。
+            当前已开放：<span class="highlight">魔法试炼 · 海盗分金试炼</span>。<br />
+            预留中：囚徒困境 · 陷阱拍卖。
           </p>
           <button id="btn-main-start" class="btn primary">
             开始神秘强者试炼
@@ -72,16 +72,80 @@
         </div>
       </section>
 
-      <!-- 预留：海盗分金 -->
+      <!-- 海盗分金 · 简介 -->
       <section id="screen-pirate-intro" class="screen">
         <div class="card">
-          <h2>海盗分金 · 试炼（预留）</h2>
+          <h2>海盗分金 · 校区后巷水塘事件</h2>
           <p class="story">
-            这里将来会是经典的“海盗分金游戏”，每个海盗都想保命又想拿最多金子。<br />
-            暂未开放，敬请期待后续更新。
+            场景设定：畅想机器人校区后面的小弄子里有一片水塘。<br />
+            某天涨潮退去，你和 Jack、雍、高、西 五个海盗，在水塘底下捞出了
+            <span class="highlight">100 枚金币</span>。
           </p>
-          <button class="btn primary" data-goto="screen-home">
-            返回试炼首页
+          <p class="story">
+            你是<span class="highlight">1 号海盗（老大 / 玩家自己）</span>，
+            其余依次为：<br />
+            2 号：Jack，3 号：雍，4 号：高，5 号：西。
+          </p>
+          <p class="story">
+            规则如下：<br />
+            · 由你先提出一份分配方案（100 枚金币怎么分给五个人）；<br />
+            · 五个人投票，如果<span class="highlight">赞成票 ≥ 3</span>，方案通过，大家按方案拿钱；<br />
+            · 如果赞成票 &lt; 3，你会被不知哪里飞来的特斯拉撞飞，<br />
+            &nbsp;&nbsp;然后 2 号海盗 Jack 接手重新分配，以此类推。
+          </p>
+          <p class="story">
+            所有海盗都很理性：<br />
+            1）首先要活命；<br />
+            2）在能活命的前提下，金币越多越好；<br />
+            3）在活命 + 金币一样多的前提下，更喜欢别人被特斯拉撞飞。
+          </p>
+          <p class="story">
+            你的目标：<span class="highlight">
+              在保证自己不被撞飞的前提下，让自己拿到尽可能多的金币。
+            </span>
+          </p>
+          <button id="btn-pirate-start" class="btn primary">
+            进入分金币试炼
+          </button>
+          <button class="btn text" data-goto="screen-home">
+            ← 返回试炼首页
+          </button>
+        </div>
+      </section>
+
+      <!-- 海盗分金 · 提交分配方案 -->
+      <section id="screen-pirate-game" class="screen">
+        <div class="card">
+          <h2>海盗分金 · 提出你的方案</h2>
+          <p class="story">
+            再提醒一次顺序：<br />
+            <span class="highlight">【你, Jack, 雍, 高, 西】</span><br />
+            也就是：1 号是你自己，2 号 Jack，3 号 雍，4 号 高，5 号 西。
+          </p>
+          <p class="story">
+            请在一行中输入五个<span class="highlight">非负整数</span>，
+            用<span class="highlight">英文逗号</span>分隔，<br />
+            表示【你, Jack, 雍, 高, 西】分别得到多少金币，<br />
+            五个数字加起来必须是 <span class="highlight">100</span>。
+          </p>
+          <p class="story">
+            示例格式：<code>90,1,1,0,8</code>
+          </p>
+          <input
+            id="pirate-input"
+            type="text"
+            class="text-input"
+            placeholder="例如：98,0,1,0,1"
+          />
+          <button id="btn-pirate-submit" class="btn primary">
+            提交分配方案
+          </button>
+          <p id="pirate-result" class="story result-text"></p>
+          <button class="btn text" data-goto="screen-pirate-intro">
+            ← 返回故事简介
+          </button>
+          <button class="btn text" data-goto="screen-home">
+            ← 返回试炼首页
           </button>
         </div>
       </section>
@@ -91,7 +155,7 @@
         <div class="card">
           <h2>囚徒困境 · 试炼（预留）</h2>
           <p class="story">
-            将来这里会有一次性 & 重复博弈版的囚徒困境，你可以体验“坦白”和“沉默”的各种结局。<br />
+            将来这里会有一次性 &amp; 重复博弈版的囚徒困境，你可以体验“坦白”和“沉默”的各种结局。<br />
             暂未开放，敬请期待。
           </p>
           <button class="btn primary" data-goto="screen-home">
@@ -397,7 +461,7 @@
             · 所以理性的野猪王会先手对空调大王出手，把大威胁解决掉。
           </p>
           <p class="story">
-            假设野猪王成功把空调大王变成野猪，这一轮结束后只剩你和野猪王。<br />
+            假设野猪王成功把空调大王变成猪，这一轮结束后只剩你和野猪王。<br />
             轮到你行动，你用<span class="highlight">故事魔杖</span>，有
             <span class="highlight">60%</span> 的概率赢下最终决斗。
           </p>
