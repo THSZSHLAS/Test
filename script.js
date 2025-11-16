@@ -3,8 +3,9 @@ const LEFT_IMAGE_COUNT = 2;   // pic_L1.png ~ pic_L2.png
 const RIGHT_IMAGE_COUNT = 2;  // pic_R1.png ~ pic_R2.png
 const BOTTOM_IMAGE_COUNT = 3; // pic_B1.png ~ pic_B3.png
 
-// 目前启用的试炼（之后实现海盗分金、囚徒困境、陷阱拍卖时，把它们加进来）
-const ENABLED_TRIALS = ["magic"]; // 未来可以改成 ["magic", "pirate", "prisoner", "auction"]
+// 已启用的试炼
+const ENABLED_TRIALS = ["magic", "pirate"]; 
+// 之后可以扩展成 ["magic", "pirate", "prisoner", "auction"]
 
 // 工具：切换页面时顺便刷新装饰图
 function showScreen(id) {
@@ -65,7 +66,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const mainStartBtn = document.getElementById("btn-main-start");
   if (mainStartBtn) {
     mainStartBtn.addEventListener("click", () => {
-      // 从已启用的试炼中随机选一个
       const trial =
         ENABLED_TRIALS[Math.floor(Math.random() * ENABLED_TRIALS.length)];
       if (trial === "magic") {
@@ -88,7 +88,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 所有 data-goto 按钮：通用页面跳转
+  // 海盗分金：简介 -> 游戏页面
+  const pirateStartBtn = document.getElementById("btn-pirate-start");
+  if (pirateStartBtn) {
+    pirateStartBtn.addEventListener("click", () => {
+      // 清空输入和结果
+      const input = document.getElementById("pirate-input");
+      const result = document.getElementById("pirate-result");
+      if (input) input.value = "";
+      if (result) result.textContent = "";
+      showScreen("screen-pirate-game");
+    });
+  }
+
+  // 通用 data-goto 页面跳转
   document.querySelectorAll("[data-goto]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const targetId = btn.getAttribute("data-goto");
@@ -220,4 +233,120 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-});
+
+  // ========================
+  // 海盗分金：提交方案逻辑
+  // ========================
+  const btnPirateSubmit = document.getElementById("btn-pirate-submit");
+  if (btnPirateSubmit) {
+    btnPirateSubmit.addEventListener("click", () => {
+      const inputEl = document.getElementById("pirate-input");
+      const resultEl = document.getElementById("pirate-result");
+      if (!inputEl || !resultEl) return;
+
+      const raw = inputEl.value.trim();
+      if (!raw) {
+        resultEl.innerHTML =
+          '至少先写点什么吧？<br />提示：格式类似 <code>98,0,1,0,1</code>';
+        return;
+      }
+
+      // 支持中文逗号
+      const parts = raw.replace(/，/g, ",").split(",");
+      if (parts.length !== 5) {
+        resultEl.innerHTML =
+          "需要刚好 5 个数字，用英文逗号隔开。<br />例如：<code>98,0,1,0,1</code>";
+        return;
+      }
+
+      const nums = [];
+      for (let p of parts) {
+        const n = parseInt(p.trim(), 10);
+        if (Number.isNaN(n)) {
+          resultEl.innerHTML =
+            "你的输入里有不是整数的东西。<br />建议先学会数数，再来当海盗。";
+          return;
+        }
+        if (n < 0) {
+          resultEl.innerHTML =
+            "还想给别人负金币？这叫金融诈骗，不叫分赃。";
+          return;
+        }
+        nums.push(n);
+      }
+
+      const [you, jack, yong, gao, xi] = nums;
+      const sum = nums.reduce((a, b) => a + b, 0);
+
+      if (sum !== 100) {
+        resultEl.innerHTML = `你这五个数加起来是 <span class="highlight">${sum}</span>，不是 100。<br />
+        连总数都没数清楚，就想指挥分赃？特斯拉已经在热车了。`;
+        return;
+      }
+
+      // 正确答案：经典 5 海盗解：1 号 98、3 号 1、5 号 1
+      // 对应顺序【你, Jack, 雍, 高, 西】= [98,0,1,0,1]
+      if (
+        you === 98 &&
+        jack === 0 &&
+        yong === 1 &&
+        gao === 0 &&
+        xi === 1
+      ) {
+        resultEl.innerHTML = `
+          ✅ <span class="highlight">通关！</span><br />
+          你给自己 <span class="highlight">98</span>，只用用 1 枚金币收买雍、1 枚收买西，刚好凑够 3 票通过。<br />
+          · 如果你挂了，后三人的博弈里，雍和西在后续局面里其实拿不到比 0 更好的东西，<br />
+          &nbsp;&nbsp;所以你给他们 1，他们就有动力投你赞成票。<br />
+          · Jack 和 高在后续局面里还能混点钱，所以你完全不用买他们。<br />
+          <br />
+          评价：你是真懂博弈，不是来做公益的海盗。`;
+        return;
+      }
+
+      // ==============
+      // 四类常见错误
+      // ==============
+
+      // 1. 暴力自肥型：你拿 >=90，且没给关键票（雍、 西）任何东西
+      if (you >= 90 && yong === 0 && xi === 0) {
+        resultEl.innerHTML = `
+          ❌ 暴力自肥型分配。<br />
+          你给自己塞了 <span class="highlight">${you}</span> 枚金币，关键选票雍和西一分钱没有。<br />
+          结果：他们当然希望你被特斯拉撞飞，<br />
+          &nbsp;&nbsp;下一轮说不定他们自己就能当老大，拿得更多。<br />
+          <br />
+          评价：你把大家都当傻子，但博弈论告诉你——真正被教育的是你自己。`;
+        return;
+      }
+
+      // 2. 大家平分好兄弟型：五个人差不多一样多
+      const maxCoin = Math.max(...nums);
+      const minCoin = Math.min(...nums);
+      if (maxCoin - minCoin <= 10) {
+        resultEl.innerHTML = `
+          ❌ 好兄弟公平分型。<br />
+          你这分配基本是“社会主义试验田”：每个人差不多都是 ${minCoin}~${maxCoin}。<br />
+          问题是：你是 1 号老大，有话语权却没用出来，<span class="highlight">既没多拿钱，又没保证别人愿意保你</span>。<br />
+          后面的海盗在后续局面里，很可能能拿到更多，自然不介意先把你送上特斯拉。<br />
+          <br />
+          评价：你适合当工会主席，不太适合当海盗老大。`;
+        return;
+      }
+
+      // 3. 慈善家型：有人拿得比你多
+      const othersMax = Math.max(jack, yong, gao, xi);
+      if (othersMax > you) {
+        resultEl.innerHTML = `
+          ❌ 慈善家型分配。<br />
+          有人拿的比你多：<span class="highlight">${othersMax}</span> &gt; 你的 <span class="highlight">${you}</span>。<br />
+          作为 1 号海盗，你的目标是“<span class="highlight">在活着的前提下最大化自己</span>”，不是给队友发年终奖。<br />
+          这样分下去，你既没拿到最多，又不一定能多出稳固的支持票。<br />
+          <br />
+          评价：你这是抢银行还是做公益？建议从“己利”这门课重修起。`;
+        return;
+      }
+
+      // 4. 贿赂错人型：拼命讨好 Jack 或高，却放弃雍和西
+      if ((jack > 0 || gao > 0) && yong === 0 && xi === 0) {
+        resultEl.innerHTML = `
