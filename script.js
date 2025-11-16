@@ -1,7 +1,7 @@
-// 可配置：左右底部图片数量（根据你实际有多少张自己改）
-const LEFT_IMAGE_COUNT = 3;   // 对应 pic_L1.png ~ pic_L3.png
-const RIGHT_IMAGE_COUNT = 3;  // 对应 pic_R1.png ~ pic_R3.png
-const BOTTOM_IMAGE_COUNT = 3; // 对应 pic_B1.png ~ pic_B3.png
+// 可配置：左右底部图片数量（和你实际素材数量一致）
+const LEFT_IMAGE_COUNT = 2;   // pic_L1.png ~ pic_L2.png
+const RIGHT_IMAGE_COUNT = 2;  // pic_R1.png ~ pic_R2.png
+const BOTTOM_IMAGE_COUNT = 3; // pic_B1.png ~ pic_B3.png
 
 // 目前启用的试炼（之后实现海盗分金、囚徒困境、陷阱拍卖时，把它们加进来）
 const ENABLED_TRIALS = ["magic"]; // 未来可以改成 ["magic", "pirate", "prisoner", "auction"]
@@ -22,6 +22,17 @@ function randInt(max) {
   return Math.floor(Math.random() * max) + 1;
 }
 
+// 如果图片抽到不存在的，兜底回到 1 号图（更稳一点）
+function setSafeSrc(img, baseName, count) {
+  const idx = randInt(count);
+  const src = `${baseName}${idx}.png`;
+  img.onerror = () => {
+    img.onerror = null;
+    img.src = `${baseName}1.png`;
+  };
+  img.src = src;
+}
+
 // 刷新左上 / 右上 / 底部图片
 function updateDecorImages() {
   const left = document.getElementById("img-left");
@@ -29,18 +40,15 @@ function updateDecorImages() {
   const bottom = document.getElementById("img-bottom");
 
   if (left && LEFT_IMAGE_COUNT > 0) {
-    const idx = randInt(LEFT_IMAGE_COUNT);
-    left.src = `pic_L${idx}.png`;
+    setSafeSrc(left, "pic_L", LEFT_IMAGE_COUNT);
   }
 
   if (right && RIGHT_IMAGE_COUNT > 0) {
-    const idx = randInt(RIGHT_IMAGE_COUNT);
-    right.src = `pic_R${idx}.png`;
+    setSafeSrc(right, "pic_R", RIGHT_IMAGE_COUNT);
   }
 
   if (bottom && BOTTOM_IMAGE_COUNT > 0) {
-    const idx = randInt(BOTTOM_IMAGE_COUNT);
-    bottom.src = `pic_B${idx}.png`;
+    setSafeSrc(bottom, "pic_B", BOTTOM_IMAGE_COUNT);
   }
 }
 
