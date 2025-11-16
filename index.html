@@ -2,712 +2,274 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <title>测一测你的动物塑 · 城市野猪王测试</title>
+  <title>神秘强者模式 · 魔法师学院博弈对决</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      margin: 0;
-      padding: 20px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC",
-        "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-      background: radial-gradient(circle at top, #ffe4f1 0, #fdf2ff 30%, #e0f2fe 70%, #fef9c3 100%);
-      color: #111827;
-    }
-    .app {
-      max-width: 900px;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.98);
-      border-radius: 22px;
-      padding: 20px 18px 24px;
-      box-shadow: 0 18px 40px rgba(148, 163, 184, 0.6);
-      border: 1px solid rgba(226, 232, 240, 0.9);
-      position: relative;
-      overflow: hidden;
-    }
-    .app::before {
-      content: "♡";
-      position: absolute;
-      font-size: 90px;
-      color: rgba(248, 187, 208, 0.4);
-      right: -8px;
-      top: -24px;
-      transform: rotate(-18deg);
-      pointer-events: none;
-    }
-    .app::after {
-      content: "🐷";
-      position: absolute;
-      font-size: 60px;
-      left: -6px;
-      bottom: -6px;
-      opacity: 0.4;
-      pointer-events: none;
-    }
-    .app-inner {
-      position: relative;
-      z-index: 1;
-    }
-    header {
-      text-align: center;
-      margin-bottom: 18px;
-    }
-    .title-main {
-      font-size: 26px;
-      margin: 0 0 4px;
-      letter-spacing: 0.12em;
-      text-indent: 0.12em;
-      font-weight: 700;
-      color: #be123c;
-    }
-    .title-sub {
-      font-size: 13px;
-      color: #6b7280;
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-      align-items: center;
-    }
-    .pill {
-      padding: 2px 8px;
-      border-radius: 999px;
-      background: #fee2e2;
-      color: #9f1239;
-      font-size: 11px;
-    }
-    .divider {
-      height: 1px;
-      margin: 14px 0 18px;
-      background: linear-gradient(to right, transparent, #fb7185, #f97316, transparent);
-      opacity: 0.8;
-    }
-    .section-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: #be123c;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .section-title::before {
-      content: "✨";
-      font-size: 16px;
-    }
-    .section-desc {
-      font-size: 13px;
-      color: #6b7280;
-      margin-bottom: 10px;
-    }
-
-    .step {
-      display: none;
-    }
-    .step.active {
-      display: block;
-    }
-
-    /* 一题一页的题目卡片 */
-    .question-card {
-      margin-bottom: 12px;
-      padding: 12px 12px 10px;
-      border-radius: 16px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-    }
-    .q-top-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 6px;
-    }
-    .q-progress {
-      font-size: 12px;
-      color: #6b7280;
-    }
-    .q-title {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: #111827;
-    }
-    .q-progress-bar {
-      width: 100%;
-      height: 8px;
-      border-radius: 999px;
-      background: #e5e7eb;
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-    .q-progress-inner {
-      height: 100%;
-      width: 0;
-      border-radius: 999px;
-      background: linear-gradient(90deg, #fb7185, #f97316);
-      transition: width 0.18s ease;
-    }
-
-    .options {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 4px 10px;
-    }
-    .option-label {
-      font-size: 13px;
-      color: #374151;
-      display: flex;
-      align-items: flex-start;
-      gap: 6px;
-      cursor: pointer;
-      padding: 6px 8px;
-      border-radius: 10px;
-      transition: background 0.12s ease, transform 0.05s ease;
-    }
-    .option-label:hover {
-      background: #fee2e2;
-      transform: translateY(-1px);
-    }
-    .option-label input {
-      margin-top: 2px;
-      accent-color: #f97373;
-    }
-
-    button {
-      padding: 11px 22px;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      font-size: 15px;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      letter-spacing: 0.04em;
-      background: linear-gradient(135deg, #fb7185, #f97316);
-      color: #fff7ed;
-      transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.1s ease;
-    }
-    button span.emoji {
-      font-size: 18px;
-    }
-    button:hover {
-      box-shadow: 0 10px 24px rgba(248, 113, 113, 0.7);
-      transform: translateY(-1px) scale(1.01);
-      filter: brightness(1.03);
-    }
-    button:active {
-      transform: translateY(0) scale(0.99);
-      box-shadow: none;
-      filter: brightness(0.96);
-    }
-    .btn-row {
-      margin-top: 10px;
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .btn-row-right {
-      margin-left: auto;
-    }
-    .btn-secondary {
-      background: #e5e7eb;
-      color: #374151;
-    }
-    .btn-secondary:hover {
-      box-shadow: 0 8px 18px rgba(148, 163, 184, 0.6);
-    }
-
-    .note {
-      margin-top: 10px;
-      font-size: 11px;
-      color: #9ca3af;
-      line-height: 1.5;
-    }
-
-    .city-input-wrap {
-      margin: 10px 0 4px;
-    }
-    .city-input-wrap input {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid #e5e7eb;
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.12s ease, box-shadow 0.12s ease;
-    }
-    .city-input-wrap input:focus {
-      border-color: #fb7185;
-      box-shadow: 0 0 0 2px rgba(248, 113, 113, 0.25);
-    }
-
-    /* loading step */
-    .loading-box {
-      padding: 12px;
-      border-radius: 16px;
-      background: #f9fafb;
-      border: 1px dashed #e5e7eb;
-    }
-    .loading-title {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-    .loading-sub {
-      font-size: 13px;
-      color: #4b5563;
-    }
-    .loader-bar {
-      width: 100%;
-      height: 10px;
-      background: #e5e7eb;
-      border-radius: 999px;
-      overflow: hidden;
-      margin-top: 10px;
-    }
-    .loader-inner {
-      height: 100%;
-      width: 40%;
-      background: linear-gradient(90deg, #fb7185, #f97316);
-      border-radius: 999px;
-      animation: loading 1.4s infinite alternate;
-    }
-    @keyframes loading {
-      from {
-        transform: translateX(-10%);
-      }
-      to {
-        transform: translateX(80%);
-      }
-    }
-    .loading-tip {
-      margin-top: 10px;
-      font-size: 12px;
-      color: #6b7280;
-    }
-
-    /* result step */
-    .result-main {
-      padding: 12px;
-      border-radius: 18px;
-      background: #fef9c3;
-      border: 1px solid rgba(250, 204, 21, 0.8);
-      margin-bottom: 12px;
-      position: relative;
-      overflow: hidden;
-    }
-    .result-main::after {
-      content: "👑";
-      position: absolute;
-      right: 10px;
-      bottom: 4px;
-      font-size: 28px;
-      opacity: 0.7;
-    }
-    .result-title {
-      font-size: 14px;
-      color: #92400e;
-      margin-bottom: 4px;
-      font-weight: 600;
-    }
-    .animal-name {
-      font-size: 22px;
-      font-weight: 800;
-      color: #b91c1c;
-      margin-bottom: 6px;
-    }
-    .result-text {
-      font-size: 13px;
-      color: #4b5563;
-      line-height: 1.6;
-    }
-    .pig-wall {
-      margin-top: 12px;
-      padding: 10px;
-      border-radius: 18px;
-      background: #f9fafb;
-      border: 1px dashed #e5e7eb;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(26px, 1fr));
-      gap: 4px;
-      justify-items: center;
-      font-size: 20px;
-    }
-    .again-btn {
-      margin-top: 12px;
-      display: flex;
-      justify-content: flex-end;
-    }
-    .again-btn button {
-      background: linear-gradient(135deg, #38bdf8, #6366f1);
-    }
-
-    @media (max-width: 640px) {
-      .app {
-        padding: 14px 12px 18px;
-      }
-      .title-main {
-        font-size: 22px;
-      }
-      .options {
-        grid-template-columns: 1fr;
-      }
-      .btn-row,
-      .again-btn {
-        justify-content: center;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="app">
-    <div class="app-inner">
-      <header>
-        <h1 class="title-main">测一测你的动物塑</h1>
-        <div class="title-sub">
-          <span class="pill">能力无限</span>
-          <span>·</span>
-          <span>我说的话就是尺 🐷</span>
+    <header>
+      <h1>神秘强者模式 · 魔法师学院博弈对决</h1>
+    </header>
+
+    <main>
+      <!-- 首页：介绍 + 开始按钮 -->
+      <section id="screen-home" class="screen active">
+        <div class="card">
+          <h2>魔法师学院三人决斗</h2>
+          <p class="story">
+            你代表魔法师学院出战，对手是：
+            <br />· 野猪王 —— 把你变成野猪，成功率 70%；
+            <br />· 空调大王 —— 用冷空调把你吹晕，成功率 90%。
+            <br />你是第一个施法的，之后是野猪王，再之后是空调大王。
+          </p>
+          <p class="story">
+            为了避免平局：<br />
+            如果第一轮结束所有人都还站着，三个人一起变成“撒头股”，谁都不赢。
+          </p>
+          <p class="story">
+            现在，你有三件武器可以选择：
+            <br />1）故事魔杖：60% 概率把一个对手用故事控到不能动；
+            <br />2）高之魅惑：80% 概率让对手大脑宕机；
+            <br />3）特斯拉之力：100% 召唤来自 Blue mountain 的特斯拉，直接把人撞飞走。
+          </p>
+          <button id="btn-start" class="btn primary">开始对局</button>
         </div>
-      </header>
+      </section>
 
-      <div class="divider"></div>
-
-      <!-- Step 1: 一题一页问卷 -->
-      <div id="step-quiz" class="step active">
-        <div class="section-title">第 1 步：一题一题慢慢来</div>
-        <div class="section-desc">
-          总共 10 题，现在只要专心看眼前这一题就好。<strong>没有对错，随心选。</strong>
+      <!-- 选择武器 -->
+      <section id="screen-weapon" class="screen">
+        <div class="card">
+          <h2>请选择你的武器</h2>
+          <p class="story">
+            你的对手都是“神秘强者”，他们都会做出让自己胜率最大化的选择。<br />
+            那么，你该选哪一把武器？
+          </p>
+          <div class="choice-group">
+            <button class="btn secondary" data-weapon="tesla">
+              特斯拉之力（成功率 100%）
+            </button>
+            <button class="btn secondary" data-weapon="charm">
+              高之魅惑（成功率 80%）
+            </button>
+            <button class="btn secondary" data-weapon="story">
+              故事魔杖（成功率 60%）
+            </button>
+          </div>
+          <button class="btn text" data-goto="screen-home">← 回到介绍</button>
         </div>
+      </section>
 
-        <div id="question-container"></div>
-
-        <div class="btn-row">
-          <button id="btn-prev" class="btn-secondary">
-            <span class="emoji">⬅️</span>
-            <span>上一题</span>
+      <!-- 特斯拉之力分支 -->
+      <section id="screen-tesla" class="screen">
+        <div class="card">
+          <h2>特斯拉之力 · 结果</h2>
+          <p class="story">
+            你选择了<span class="highlight">特斯拉之力</span>，成功率 100%。<br />
+            作为理性选手，你会优先处理威胁最大的
+            <span class="highlight">空调大王（90%）</span>。
+          </p>
+          <p class="story">
+            · 你一杖下去，空调大王被特斯拉撞飞到 Blue mountain 的某座山上，彻底退出战场。<br />
+            · 接下来轮到<span class="highlight">野猪王</span> —— 他有 70% 概率把你变成野猪。
+          </p>
+          <p class="story">
+            也就是说，在这个选择下，即使你选了<span class="highlight">命中率 100% 的武器</span>，
+            你最后的胜率只有大约 <span class="highlight">30%</span>，
+            而野猪王有 <span class="highlight">70%</span> 概率把你变成猪。
+          </p>
+          <p class="story">
+            这把我们直接当作你已经被野猪王秒了。<br />
+            <span class="taunt">评价：菜，就多练。</span>
+          </p>
+          <button class="btn primary" data-goto="screen-weapon">
+            再想想，换个武器
           </button>
-          <button id="btn-next">
-            <span class="emoji">➡️</span>
-            <span id="btn-next-text">下一题</span>
+          <button class="btn text" data-goto="screen-home">← 回到首页</button>
+        </div>
+      </section>
+
+      <!-- 高之魅惑：选择先打谁 -->
+      <section id="screen-charm-choose" class="screen">
+        <div class="card">
+          <h2>高之魅惑 · 选择目标</h2>
+          <p class="story">
+            你选择了<span class="highlight">高之魅惑</span>，成功率 80%。<br />
+            你必须先魅惑一个对手：
+          </p>
+          <div class="choice-group">
+            <button class="btn secondary" data-charm-target="ac">
+              先魅惑空调大王（90% 吹晕你）
+            </button>
+            <button class="btn secondary" data-charm-target="boar">
+              先魅惑野猪王（70% 把你变成猪）
+            </button>
+          </div>
+          <button class="btn text" data-goto="screen-weapon">← 换个武器</button>
+        </div>
+      </section>
+
+      <!-- 高之魅惑：先打空调大王 -->
+      <section id="screen-charm-ac" class="screen">
+        <div class="card">
+          <h2>高之魅惑 · 先魅惑空调大王</h2>
+          <p class="story">
+            · 你用 80% 的<span class="highlight">高之魅惑</span>去秒空调大王。<br />
+            · 假设成功，他直接原地宕机。<br />
+            · 接下来轮到<span class="highlight">野猪王</span>，他有 70% 概率把你变成野猪。
+          </p>
+          <p class="story">
+            即使你第一下成功魅惑了空调大王，后面你仍然要面对
+            <span class="highlight">70% 概率的野猪光速制裁</span>。
+          </p>
+          <p class="story">
+            这条线大致也是输多赢少，只是比特斯拉稍微好看一点。<br />
+            <span class="taunt">评价：这是“看上去很强，实战略亏”的经典技能。</span>
+          </p>
+          <button class="btn primary" data-goto="screen-weapon">
+            再换个武器试试
           </button>
+          <button class="btn text" data-goto="screen-home">← 回到首页</button>
         </div>
+      </section>
 
-        <div class="note">
-          小提示：你可以来回切换题目，答案会自动记住。<br />
-          但不管你怎么选，<strong>请你记住 jack是绝对的野猪King</strong>
-        </div>
-      </div>
-
-      <!-- Step 2: 城市 -->
-      <div id="step-city" class="step">
-        <div class="section-title">第 2 步：告诉我，你目前的地盘在哪？</div>
-        <div class="section-desc">
-          请输入你现在所在的城市（认真填、乱写都可以），这会直接决定你的动物塑称号。
-        </div>
-        <div class="city-input-wrap">
-          <input
-            id="cityInput"
-            type="text"
-            placeholder="例：长沙 "
-          />
-        </div>
-        <div class="btn-row btn-row-right">
-          <button id="btn-city-next">
-            <span class="emoji">🔮</span>
-            <span>确认城市 · 开始评估</span>
+      <!-- 高之魅惑：先打野猪王 -->
+      <section id="screen-charm-boar" class="screen">
+        <div class="card">
+          <h2>高之魅惑 · 先魅惑野猪王</h2>
+          <p class="story">
+            · 你用 80% 的<span class="highlight">高之魅惑</span>去秒野猪王。<br />
+            · 假设你成功了，现在场上只剩你和<span class="highlight">空调大王</span>。
+          </p>
+          <p class="story">
+            接下来轮到空调大王，他有 <span class="highlight">90%</span> 概率把你吹晕。<br />
+            简单说：你基本一定会被冷空调教做人。
+          </p>
+          <p class="story">
+            所以高之魅惑这条线，无论先打谁，<br />
+            都是那种<span class="highlight">“看起来好像挺强，实际上很难赢”</span>的陷阱选择。
+          </p>
+          <p class="taunt">
+            评价：你属于“数值看着很猛，但系统是站在对手那边”的那种玩家。
+          </p>
+          <button class="btn primary" data-goto="screen-weapon">
+            再换个武器试试
           </button>
+          <button class="btn text" data-goto="screen-home">← 回到首页</button>
         </div>
-        <div class="note">
-          不报城市是吧，那就给你封个 流浪野猪刚子
-        </div>
-      </div>
+      </section>
 
-      <!-- Step 3: 评估中 -->
-      <div id="step-loading" class="step">
-        <div class="section-title">第 3 步：评估中……请稍候 🐽</div>
-        <div class="loading-box">
-          <div class="loading-title">
-            正在为 <span id="loading-city-name"></span> 的你解析动物塑……
+      <!-- 故事魔杖：选择三种策略 -->
+      <section id="screen-story-choose" class="screen">
+        <div class="card">
+          <h2>故事魔杖 · 选择策略</h2>
+          <p class="story">
+            你选择了<span class="highlight">故事魔杖</span>，命中率 60%。<br />
+            你有三种策略：
+          </p>
+          <div class="choice-group">
+            <button class="btn secondary" data-story-option="boar">
+              ① 先控野猪王（60% 命中）
+            </button>
+            <button class="btn secondary" data-story-option="ac">
+              ② 先控空调大王（60% 命中）
+            </button>
+            <button class="btn secondary" data-story-option="pass">
+              ③ 第一轮空放，假装在吟唱长篇故事
+            </button>
           </div>
-          <div class="loading-sub">
-            系统正在：综合 10 道题的宇宙震动值 + 城市味道参数 + 随机野猪因子。
-          </div>
-          <div class="loader-bar">
-            <div class="loader-inner"></div>
-          </div>
-          <div class="loading-tip">
-            小贴士：进度条跑完之前，你可以先深呼吸三次，顺便想一想今天要犒劳自己的小零食。
-          </div>
+          <p class="small">
+            针对 ① 和 ②，我们会计算你的胜率 X，并用 1-100 的随机数决定这把你赢不赢。<br />
+            对于 ③，是一条<span class="highlight">看起来抽象，但其实是最优策略</span>的路线。
+          </p>
+          <button class="btn text" data-goto="screen-weapon">← 换个武器</button>
         </div>
-      </div>
+      </section>
 
-      <!-- Step 4: 结果 -->
-      <div id="step-result" class="step">
-        <div class="section-title">最终结果：欢迎登基 🎉</div>
-        <div class="result-main">
-          <div class="result-title">您的动物塑为：</div>
-          <div class="animal-name"><span id="result-title-city"></span>野猪王 🐗👑</div>
-          <div class="result-text">
-            恭喜，你在 <span id="result-subtitle-city"></span> 的<strong>精神图腾正式登记为“野猪王”</strong>。  
-            这意味着：本测试不会改变你的人生，只会让朋友有更多理由骂你。
-          </div>
-        </div>
-
-        <div class="result-text" style="margin-bottom:8px;">
-          下面是属于你的「野猪军团」，无敌野猪刚：
-        </div>
-        <div id="pig-wall" class="pig-wall"></div>
-
-        <div class="again-btn">
-          <button onclick="window.location.reload()">
-            <span class="emoji">🔁</span>
-            <span>再玩一次 · 换个城市称王</span>
+      <!-- 故事魔杖：打野猪王（随机数） -->
+      <section id="screen-story-boar" class="screen">
+        <div class="card">
+          <h2>故事魔杖 · 先控野猪王</h2>
+          <p class="story">
+            你决定先对<span class="highlight">野猪王</span>使用故事魔杖。<br />
+            · 命中率：60%。<br />
+            · 即使他被控住，后面还有<span class="highlight">空调大王 90%</span> 的冷风制裁。<br />
+          </p>
+          <p class="story">
+            在合理的推理下，你这条路线最终大约有
+            <span class="highlight">30%</span> 的胜率（X = 30）。<br />
+            现在我们来用随机数测试一下这把你是靠脑子赢，还是靠运气赢。
+          </p>
+          <button id="btn-story-boar-roll" class="btn primary">
+            点击抽一个 1–100 的随机数
           </button>
+          <p id="story-boar-result" class="story result-text"></p>
+          <button class="btn text" data-goto="screen-story-choose">
+            ← 回到故事魔杖策略选择
+          </button>
+          <button class="btn text" data-goto="screen-home">← 回到首页</button>
         </div>
+      </section>
 
-        <div class="note">
-          本测试纯属娱乐，所有结果绝对代表任何严肃人格诊断，只代表：<strong>你愿意玩到最后，已经很牛逼了</strong>。
+      <!-- 故事魔杖：打空调大王（随机数） -->
+      <section id="screen-story-ac" class="screen">
+        <div class="card">
+          <h2>故事魔杖 · 先控空调大王</h2>
+          <p class="story">
+            你决定先对<span class="highlight">空调大王</span>使用故事魔杖。<br />
+            · 命中率：60%。<br />
+            · 成功的话，后面主要要和<span class="highlight">野猪王</span>对线。
+          </p>
+          <p class="story">
+            在合理推理下，你这条路线最终大约有
+            <span class="highlight">38%</span> 的胜率（X ≈ 38）。<br />
+            现在用随机数看看这把你能不能当场翻盘。
+          </p>
+          <button id="btn-story-ac-roll" class="btn primary">
+            点击抽一个 1–100 的随机数
+          </button>
+          <p id="story-ac-result" class="story result-text"></p>
+          <button class="btn text" data-goto="screen-story-choose">
+            ← 回到故事魔杖策略选择
+          </button>
+          <button class="btn text" data-goto="screen-home">← 回到首页</button>
         </div>
-      </div>
-    </div>
+      </section>
+
+      <!-- 故事魔杖：空放策略（最优） -->
+      <section id="screen-story-pass" class="screen">
+        <div class="card">
+          <h2>故事魔杖 · 空放策略</h2>
+          <p class="story">
+            你选择了<span class="highlight">第一轮空放</span>，假装在吟唱一个超长的故事：<br />
+            你什么都不打，只是在那边疯狂讲故事。
+          </p>
+          <p class="story">
+            · 野猪王如果也空放，那他大概率会被<span class="highlight">空调大王</span>先手吹死。<br />
+            · 所以理性的野猪王会先手对空调大王出手，把大威胁解决掉。
+          </p>
+          <p class="story">
+            假设野猪王成功把空调大王变成猪，这一轮结束后就只剩你和野猪王。<br />
+            这时候轮到你行动，你用<span class="highlight">故事魔杖</span>，有
+            <span class="highlight">60%</span> 的概率赢下最终决斗。
+          </p>
+          <p class="story">
+            也就是说，这条“看上去像在划水”的空放路线，反而给了你
+            <span class="highlight">最高的理论胜率：60%</span>。
+          </p>
+          <button id="btn-story-pass-roll" class="btn primary">
+            点击抽一个 1–100 的随机数（≤ 60 视为获胜）
+          </button>
+          <p id="story-pass-result" class="story result-text"></p>
+          <button class="btn text" data-goto="screen-story-choose">
+            ← 回到故事魔杖策略选择
+          </button>
+          <button class="btn text" data-goto="screen-home">← 回到首页</button>
+        </div>
+      </section>
+    </main>
   </div>
 
-  <script>
-    // 题目数据：一题一页展示
-    const questions = [
-      {
-        id: 1,
-        text: "世界是一片漆黑的森林，你选择成为？",
-        options: [
-          "A 森林本身，感受每一片树叶。",
-          "B 在林间温暖的篝火。",
-          "C 隐藏在古树根下深不见底的古井。",
-          "D 一阵穿过所有缝隙的风。"
-        ]
-      },
-      {
-        id: 2,
-        text: "你获得了一块记忆橡皮擦，你会擦掉？",
-        options: [
-          "A 别人对你的所有亏欠，让心灵彻底自由。",
-          "B 你最尴尬最羞耻的那个瞬间。",
-          "C 一段让你心碎的感情。",
-          "D 你犯下的一个无法弥补的错误。"
-        ]
-      },
-      {
-        id: 3,
-        text: "你意外获得了一个“生活BUG”的控制台，但一天只能使用一个指令，你会输入？",
-        options: [
-          "A 显示所有事物的隐藏信息。",
-          "B 召唤会跳舞的羊驼和朋友。",
-          "C 一键生成绝对舒适区。",
-          "D 开启主角光环。"
-        ]
-      },
-      {
-        id: 4,
-        text: "你更倾向于哪种形式的“永生”？",
-        options: [
-          "A 你的思想、作品或传说被永远流传。",
-          "B 灵魂转世，不断体验不同的人生。",
-          "C 拥有不朽的肉体，看着沧海桑田。",
-          "D 化为自然的一部分，如山脉或河流，静观万物。"
-        ]
-      },
-      {
-        id: 5,
-        text: "你内心最深处的恐惧，更接近于？",
-        options: [
-          "A 被所有人遗忘，仿佛从未存在过。",
-          "B 成为一个无聊、平庸、可被替代的人。",
-          "C 失去控制，被原始的冲动或混乱所吞噬。",
-          "D 被囚禁，无论是物理上还是精神上。"
-        ]
-      },
-      {
-        id: 6,
-        text: "在你的梦境中，哪种场景反复出现？",
-        options: [
-          "A 在无边无际的水中，时而漂浮，时而下沉。",
-          "B 站在悬崖边，俯瞰着壮丽但危险的景色。",
-          "C 在一个错综复杂的建筑里奔跑，找不到出口。",
-          "D 和一群模糊不清但感觉熟悉的人在一起。"
-        ]
-      },
-      {
-        id: 7,
-        text: "如果你的情绪是一个APP，它最常用的功能是？",
-        options: [
-          "A “后台运行”模式，表面风平浪静，CPU已经算到冒烟。",
-          "B “弹幕分享”功能，把所有内心OS都发到好友群里。",
-          "C “飞行模式”，一键断开所有连接，谢绝打扰。",
-          "D “静音模式”，所有通知都只显示角标，不发出任何声音。"
-        ]
-      },
-      {
-        id: 8,
-        text: "你认为“家”的本质是什么？",
-        options: [
-          "A 一个可以卸下所有伪装和防备的绝对领域。",
-          "B 一群可以无条件接纳你、与你共享喜悦的人。",
-          "C 刻在你基因里但那个回不去的故乡。",
-          "D 一个精神坐标，无论身在何处，心之所向。"
-        ]
-      },
-      {
-        id: 9,
-        text: "如果必须选择一种感官来放大十倍，你会选？",
-        options: [
-          "A 听觉，聆听万物的低语和弦外之音。",
-          "B 触觉，感受世界的质地和温度。",
-          "C 嗅觉，捕捉空气中隐藏的信息和记忆。",
-          "D 视觉，看穿表象，洞悉世界的结构。"
-        ]
-      },
-      {
-        id: 10,
-        text: "你如何看待自己的“阴暗面”？",
-        options: [
-          "A 是我力量的源泉，需要被理解和掌控。",
-          "B 是需要努力克服的弱点。",
-          "C 只是我的一部分，没必要大惊小怪。",
-          "D 我尽量忽略它，不去想它。"
-        ]
-      }
-    ];
-
-    const answers = {}; // index -> "A"/"B"/"C"/"D"
-    let currentIndex = 0;
-
-    const questionContainer = document.getElementById("question-container");
-    const btnPrev = document.getElementById("btn-prev");
-    const btnNext = document.getElementById("btn-next");
-    const btnNextText = document.getElementById("btn-next-text");
-
-    const appState = {
-      city: "宇宙某处"
-    };
-
-    function showStep(id) {
-      document.querySelectorAll(".step").forEach((el) => el.classList.remove("active"));
-      document.getElementById(id).classList.add("active");
-    }
-
-    // 渲染当前题目
-    function renderQuestion() {
-      const q = questions[currentIndex];
-      const total = questions.length;
-      const savedAnswer = answers[currentIndex] || null;
-
-      const progressPercent = ((currentIndex + 1) / total) * 100;
-
-      let optionsHtml = "";
-      const labels = ["A", "B", "C", "D"];
-      q.options.forEach((text, idx) => {
-        const value = labels[idx];
-        const checked = savedAnswer === value ? "checked" : "";
-        optionsHtml += `
-          <label class="option-label">
-            <input type="radio" name="currentQ" value="${value}" ${checked} />
-            <span>${text}</span>
-          </label>
-        `;
-      });
-
-      questionContainer.innerHTML = `
-        <div class="question-card">
-          <div class="q-top-row">
-            <div class="q-title">第 ${q.id} 题</div>
-            <div class="q-progress">进度：${q.id} / ${total}</div>
-          </div>
-          <div class="q-progress-bar">
-            <div class="q-progress-inner" style="width:${progressPercent}%;"></div>
-          </div>
-          <div style="font-size:13px;margin:6px 0 8px;color:#4b5563;">
-            ${q.text}
-          </div>
-          <div class="options">
-            ${optionsHtml}
-          </div>
-        </div>
-      `;
-
-      // 更新按钮状态
-      btnPrev.disabled = currentIndex === 0;
-      if (currentIndex === total - 1) {
-        btnNextText.textContent = "答完了 · 去填城市";
-      } else {
-        btnNextText.textContent = "下一题";
-      }
-
-      // 绑定选择事件，保存答案
-      questionContainer.querySelectorAll('input[name="currentQ"]').forEach((input) => {
-        input.addEventListener("change", (e) => {
-          answers[currentIndex] = e.target.value;
-        });
-      });
-    }
-
-    // 初始化第一题
-    renderQuestion();
-
-    // 上一题
-    btnPrev.addEventListener("click", () => {
-      if (currentIndex > 0) {
-        currentIndex--;
-        renderQuestion();
-      }
-    });
-
-    // 下一题 / 去填城市
-    btnNext.addEventListener("click", () => {
-      if (!answers[currentIndex]) {
-        alert("没选答案勒 瞎子，快点选！");
-        return;
-      }
-      if (currentIndex < questions.length - 1) {
-        currentIndex++;
-        renderQuestion();
-      } else {
-        // 所有题都答完，进入城市步骤
-        showStep("step-city");
-      }
-    });
-
-    // 城市步
-    document.getElementById("btn-city-next").addEventListener("click", () => {
-      let city = document.getElementById("cityInput").value.trim();
-      if (!city) {
-        city = "宇宙某处";
-      }
-      appState.city = city;
-      document.getElementById("loading-city-name").textContent = city;
-      showStep("step-loading");
-
-      // 模拟评估时间
-      setTimeout(showResult, 2200);
-    });
-
-    function showResult() {
-      const city = appState.city || "宇宙某处";
-      document.getElementById("result-title-city").textContent = city;
-      document.getElementById("result-subtitle-city").textContent = city;
-
-      // 生成一墙猪猪
-      const pigWall = document.getElementById("pig-wall");
-      let html = "";
-      for (let i = 0; i < 72; i++) {
-        html += "<span>🐷</span>";
-      }
-      pigWall.innerHTML = html;
-
-      showStep("step-result");
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
