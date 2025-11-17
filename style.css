@@ -191,6 +191,19 @@ body {
   background: linear-gradient(180deg, rgba(240, 247, 255, 0.9), #eef4ff);
 }
 
+#gamble-round-log {
+  max-height: 220px;
+  overflow-y: auto;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 8px;
+  border-top: 1px dashed #c5ddff;
+  padding-top: 6px;
+}
+
+
+
+
 /* 响应式 */
 @media (min-width: 768px) {
   .app-header h1 {
