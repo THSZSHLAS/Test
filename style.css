@@ -247,6 +247,84 @@ code {
 .home-link-btn {
   margin-top: 8px;
 }
+/* 不再使用左上 / 右上的装饰图，统一隐藏 */
+.decor-img {
+  display: none !important;
+}
+
+/* 死亡动画：整个 app 抖一下 */
+.app.death-shake {
+  animation: death-shake 0.5s ease-in-out;
+}
+
+@keyframes death-shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
+/* HP 归零时的蒙层与弹框 */
+#death-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+#death-overlay.show {
+  display: flex;
+}
+
+.death-box {
+  background: #f7fbff;
+  border-radius: 20px;
+  padding: 24px 28px;
+  max-width: 320px;
+  width: 80%;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: death-zoom 0.35s ease-out;
+}
+
+.death-box h2 {
+  margin-bottom: 8px;
+  font-size: 1.4rem;
+  color: #c0392b;
+}
+
+.death-box p {
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+  color: #133b5c;
+}
+
+.death-box button {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  background: #3498db;
+  color: #fff;
+}
+
+.death-box button:hover {
+  background: #2980b9;
+}
+
+@keyframes death-zoom {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
 
 
 
