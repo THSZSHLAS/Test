@@ -1,215 +1,253 @@
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui,
     sans-serif;
-  background: linear-gradient(180deg, #e6f4ff, #f5fbff);
-  color: #123456;
+  background: linear-gradient(145deg, #e0f2ff, #f5fbff);
+  color: #023047;
 }
 
 .app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+  position: relative;
+  padding: 16px;
 }
 
-.app-header {
-  padding: 16px 20px;
+/* 顶部标题 */
+header {
   text-align: center;
-  background: radial-gradient(circle at top, #ffffff, #e4f0ff);
-  box-shadow: 0 2px 8px rgba(30, 80, 160, 0.15);
-  position: sticky;
-  top: 0;
-  z-index: 5;
+  margin-top: 32px;
 }
 
-.app-header h1 {
+h1 {
   margin: 0;
-  font-size: 1.6rem;
-  letter-spacing: 0.08em;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #01579b;
 }
 
-.subtitle {
-  margin: 6px 0 0;
-  font-size: 0.9rem;
-  color: #4c6ba8;
-}
-
-.app-main {
+main {
   flex: 1;
   display: flex;
-  padding: 20px 12px 40px;
+  align-items: center;
   justify-content: center;
+  padding: 16px 0 8px;
 }
 
+/* 底部图片区域 */
+footer {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0 4px;
+}
+
+/* 装饰图片 */
+.decor-img {
+  position: absolute;
+  width: 96px;
+  height: auto;
+  opacity: 0.95;
+  pointer-events: none;
+}
+
+.decor-left {
+  top: 12px;
+  left: 12px;
+}
+
+.decor-right {
+  top: 12px;
+  right: 12px;
+}
+
+.decor-bottom {
+  max-width: 220px;
+  width: 40vw;
+  height: auto;
+  opacity: 0.95;
+}
+
+/* 屏幕切换区域 */
 .screen {
   display: none;
   width: 100%;
-  max-width: 760px;
+  max-width: 720px;
 }
 
 .screen.active {
   display: block;
 }
 
+/* 卡片风格 */
 .card {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.92);
   border-radius: 18px;
-  padding: 20px 18px 24px;
-  box-shadow: 0 10px 24px rgba(40, 100, 190, 0.18);
-  border: 1px solid rgba(150, 190, 250, 0.9);
+  padding: 24px 20px 20px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14);
+  backdrop-filter: blur(6px);
 }
 
-.card h2 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  font-size: 1.3rem;
-  color: #1d3d7a;
+h2 {
+  margin: 0 0 12px;
+  font-size: 1.35rem;
+  font-weight: 650;
+  color: #01579b;
 }
 
-.card h3 {
-  margin-top: 18px;
-  margin-bottom: 6px;
-  font-size: 1.05rem;
-  color: #23488f;
-}
-
+/* 文本样式 */
 .story {
-  margin: 6px 0 10px;
-  line-height: 1.6;
-  font-size: 0.96rem;
-}
-
-.story.small,
-.small {
-  font-size: 0.85rem;
-  color: #465a86;
-  line-height: 1.5;
-}
-
-.highlight {
-  color: #e0603c;
-  font-weight: 600;
+  margin: 8px 0;
+  font-size: 0.95rem;
+  line-height: 1.7;
 }
 
 .taunt {
-  color: #c0163e;
+  margin: 12px 0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #d32f2f;
+  font-weight: 500;
+}
+
+.result-text {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(3, 105, 161, 0.35);
+}
+
+.highlight {
+  color: #e65100;
   font-weight: 600;
 }
 
-.choice-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin: 12px 0 10px;
-}
-
-.inline-form {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin: 10px 0 14px;
-  font-size: 0.9rem;
-}
-
-.inline-form input[type="number"] {
-  width: 80px;
-  padding: 6px 8px;
-  border-radius: 8px;
-  border: 1px solid #b6c7ea;
-  font-size: 0.9rem;
-  outline: none;
-}
-
-.inline-form input[type="number"]:focus {
-  border-color: #3f7ef0;
-  box-shadow: 0 0 0 2px rgba(63, 126, 240, 0.25);
-}
-
+/* 按钮样式 */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 14px;
+  padding: 10px 16px;
   border-radius: 999px;
   border: none;
-  font-size: 0.96rem;
   cursor: pointer;
-  transition: transform 0.08s ease, box-shadow 0.12s ease,
-    background 0.12s ease, color 0.12s ease;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  transition: all 0.15s ease-out;
   user-select: none;
 }
 
 .btn.primary {
-  background: linear-gradient(135deg, #2a6efb, #3f8bff);
+  background: #0288d1;
   color: #ffffff;
-  box-shadow: 0 6px 16px rgba(40, 120, 220, 0.35);
+  box-shadow: 0 4px 12px rgba(2, 136, 209, 0.35);
 }
 
 .btn.primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 9px 20px rgba(40, 120, 220, 0.45);
+  box-shadow: 0 7px 18px rgba(2, 136, 209, 0.45);
 }
 
 .btn.secondary {
   background: #ffffff;
-  color: #2a5c9e;
-  border: 1px solid #c5ddff;
-  box-shadow: 0 4px 12px rgba(80, 130, 190, 0.2);
-  text-align: left;
+  color: #01579b;
+  border: 1px solid rgba(2, 136, 209, 0.35);
 }
 
 .btn.secondary:hover {
-  background: #f1f4ff;
-  transform: translateY(-1px);
+  background: #e1f5fe;
 }
 
 .btn.text {
   background: transparent;
+  color: #0277bd;
+  padding: 6px 8px;
   border: none;
-  color: #4a78ba;
-  padding-left: 0;
-  padding-right: 0;
   box-shadow: none;
-}
-
-.btn.text:hover {
   text-decoration: underline;
 }
 
-.app-footer {
-  padding: 10px 16px 16px;
-  font-size: 0.78rem;
-  text-align: center;
-  color: #6a7ca1;
-  border-top: 1px dashed rgba(150, 180, 230, 0.6);
-  background: linear-gradient(180deg, rgba(240, 247, 255, 0.9), #eef4ff);
+.btn[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
+/* 选择按钮组 */
+.choice-group {
+  margin: 16px 0 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 输入框 */
+.text-input {
+  width: 100%;
+  padding: 9px 12px;
+  margin: 8px 0 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.9);
+  font-size: 0.95rem;
+}
+
+.text-input:focus {
+  outline: none;
+  border-color: #0288d1;
+  box-shadow: 0 0 0 1px rgba(2, 136, 209, 0.35);
+}
+
+/* 行内代码块 */
+code {
+  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  background: #e0f2fe;
+  padding: 1px 4px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+/* 三色珠子游戏滚动记录区 */
 #gamble-round-log {
-  max-height: 220px;
+  max-height: 200px;
   overflow-y: auto;
-  font-size: 13px;
-  line-height: 1.5;
-  margin-top: 8px;
-  border-top: 1px dashed #c5ddff;
-  padding-top: 6px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(148, 163, 184, 0.7);
+  font-size: 0.9rem;
 }
 
-
-
-
-/* 响应式 */
-@media (min-width: 768px) {
-  .app-header h1 {
-    font-size: 1.9rem;
+/* 小屏适配 */
+@media (max-width: 600px) {
+  header {
+    margin-top: 20px;
   }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+  }
+
   .card {
-    padding: 24px 26px 28px;
+    padding: 18px 14px 16px;
+  }
+
+  .decor-img {
+    width: 72px;
+  }
+
+  .decor-bottom {
+    width: 55vw;
+    max-width: 200px;
   }
 }
