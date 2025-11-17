@@ -224,6 +224,33 @@ code {
   font-size: 0.9rem;
 }
 
+/* 顶部脑容量 HP 状态条 */
+#hp-bar {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  text-align: right;
+  color: #134f80;
+}
+
+#hp-bar #hp-value {
+  font-weight: 600;
+}
+
+/* 小屏幕时 HP 条居中 */
+@media (max-width: 600px) {
+  #hp-bar {
+    text-align: center;
+  }
+}
+
+/* 首页“回到旧版灵智测试”按钮的额外间距 */
+.home-link-btn {
+  margin-top: 8px;
+}
+
+
+
+
 /* 小屏适配 */
 @media (max-width: 600px) {
   header {
