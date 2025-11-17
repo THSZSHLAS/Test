@@ -1,6 +1,6 @@
 // =================== 图片配置 ===================
 // 现在只用底部图片，随机 pic_B1.png ~ pic_B3.png
-const BOTTOM_IMAGE_COUNT = 3;
+const BOTTOM_IMAGE_COUNT = 6;
 
 // 陷阱拍卖配置
 const auctionValue = 10;
