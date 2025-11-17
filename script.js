@@ -13,7 +13,7 @@ let prisonHistory = [];
 let prisonTotalYou = 0;
 let prisonTotalStrong = 0;
 
-// 分赃后的豪赌（三色珠子游戏）
+// 分赃后的豪赌（三色珠子幸运游戏）
 let gambleRound = 0;          // 已玩局数（0~10）
 let gambleTotalCost = 0;      // 总成本
 let gambleTotalReward = 0;    // 总奖励
@@ -73,6 +73,67 @@ function updateDecorImages() {
 // 魔法试炼：随机 1~100
 function roll100() {
   return Math.floor(Math.random() * 100) + 1;
+}
+
+// =================== 脑容量 HP 系统 ===================
+
+const MAX_HP = 3;
+let currentHP = MAX_HP;
+
+const taunts = [
+  "就这？",
+  "建议转人工。",
+  "手机放转转回收了吧。",
+  "嘻嘻，开了吗？",
+  "我说灵智？",
+  "菜就多练。",
+  "建议外接义脑。",
+  "？",
+  "啊？？？？？",
+  "你这脑容量打折卖的吗？",
+  "操作像极了 AI 还没训练完的那种。"
+];
+
+function randomTaunt() {
+  const idx = Math.floor(Math.random() * taunts.length);
+  return taunts[idx];
+}
+
+function initHPBar() {
+  const header = document.querySelector("header");
+  if (!header) return;
+  const bar = document.createElement("div");
+  bar.id = "hp-bar";
+  bar.innerHTML = '脑容量 HP：<span id="hp-value"></span>';
+  header.appendChild(bar);
+}
+
+function updateHPDisplay() {
+  const valEl = document.getElementById("hp-value");
+  if (!valEl) return;
+  const hearts =
+    "❤".repeat(currentHP) + "♡".repeat(Math.max(0, MAX_HP - currentHP));
+  valEl.textContent = `${currentHP}/${MAX_HP} ${hearts}`;
+}
+
+function loseHP(reasonText) {
+  if (currentHP > 0) {
+    currentHP -= 1;
+  }
+  updateHPDisplay();
+
+  const parts = [];
+  if (reasonText) parts.push(reasonText);
+  parts.push(randomTaunt());
+  parts.push(`脑容量 HP -1，剩余 ${currentHP}/${MAX_HP}。`);
+  alert(parts.join("\n\n"));
+
+  if (currentHP <= 0) {
+    alert("HP 已见底，灵智系统强制重启。\n送你回主页重新做人。");
+    currentHP = MAX_HP;
+    updateHPDisplay();
+    showScreen("screen-home");
+  }
 }
 
 // =================== 囚徒困境辅助 ===================
@@ -182,18 +243,22 @@ function resetGambleGame() {
   }
 }
 
-// 抽一次结果（用概率大概贴近你写的那一套）
+// 抽一次结果：表面上很香，实际上期望值是负的
 function sampleGambleOutcome() {
   const r = Math.random(); // 0 ~ 1
 
-  // 按你给的“实际概率”大致来：
-  // 头等奖：0.0155%
-  // 好运奖：约 2%
-  // 安慰奖：约 15%
-  // 普通奖：约 33%
-  // 回血局：约 48.7%（其余都丢给它）
-  if (r < 0.000155) {
-    // 头等奖
+  // 设计的真实概率（总和 = 1）：
+  // 头等奖：0.1%
+  // 好运奖：1%
+  // 安慰奖：9%
+  // 普通奖：70%（大概率小亏）
+  // 回血局：19.9%（看起来很爽）
+  //
+  // 在「每局成本 5 元」下，理论期望大约是：每局亏 0.46 元左右。
+  // 玩 10 局，平均下来整体净亏 ~4~5 元，更符合“豪赌”本质。
+
+  if (r < 0.001) {
+    // 0.1% —— 头等奖
     const reward = 20;
     const net = reward - 5;
     return {
@@ -202,9 +267,9 @@ function sampleGambleOutcome() {
       reward,
       net,
     };
-  } else if (r < 0.020155) {
-    // 好运奖
-    const reward = randIntRange(10, 19);
+  } else if (r < 0.011) {
+    // 再加 1% —— 好运奖（区间 0.001 ~ 0.011）
+    const reward = randIntRange(10, 19); // 平均 14.5
     const net = reward - 5;
     return {
       level: "好运奖",
@@ -212,9 +277,9 @@ function sampleGambleOutcome() {
       reward,
       net,
     };
-  } else if (r < 0.170155) {
-    // 安慰奖
-    const reward = randIntRange(5, 9);
+  } else if (r < 0.101) {
+    // 再加 9% —— 安慰奖（区间 0.011 ~ 0.101）
+    const reward = randIntRange(5, 9); // 平均 7
     const net = reward - 5;
     return {
       level: "安慰奖",
@@ -222,9 +287,9 @@ function sampleGambleOutcome() {
       reward,
       net,
     };
-  } else if (r < 0.500155) {
-    // 普通奖
-    const reward = randIntRange(1, 4);
+  } else if (r < 0.801) {
+    // 再加 70% —— 普通奖（区间 0.101 ~ 0.801）
+    const reward = randIntRange(1, 4); // 平均 2.5，绝大多数局都是小亏
     const net = reward - 5;
     return {
       level: "普通奖",
@@ -233,8 +298,8 @@ function sampleGambleOutcome() {
       net,
     };
   } else {
-    // 回血局 543
-    const reward = 10;
+    // 剩下 19.9% —— 回血局（区间 0.801 ~ 1）
+    const reward = 10; // 看起来很爽的“返现局”
     const net = reward - 5;
     return {
       level: "回血局",
@@ -315,6 +380,10 @@ function playOneGambleRound() {
         输了就别截图了，再截图特斯拉可能就要出发了。<br />
         赌场不怕你偶尔赢一两局，只怕你突然开窍不再玩。`;
     }
+
+    if (gambleTotalNet < 0) {
+      loseHP("分赃后的豪赌：十局玩完整体是亏的。赌场：谢谢你的脑容量充值。");
+    }
   }
 
   summary.innerHTML = summaryHtml;
@@ -323,7 +392,10 @@ function playOneGambleRound() {
   }
 }
 
-// =================== 初始化绑定 ===================
+// =================== 初始化：HP 条 & 首页外链 ===================
+
+initHPBar();
+updateHPDisplay();
 
 // 1）先刷新一次图片
 updateDecorImages();
@@ -334,6 +406,22 @@ if (mainStartBtn) {
   mainStartBtn.addEventListener("click", () => {
     showScreen("screen-trial-menu");
   });
+}
+
+// 首页追加“回到旧版灵智测试”按钮（JS 动态插入，不改 HTML）
+const homeCard = document.querySelector("#screen-home .card");
+if (homeCard) {
+  const br1 = document.createElement("br");
+  const br2 = document.createElement("br");
+  const linkBtn = document.createElement("a");
+  linkBtn.href = "https://thszshlas.github.io/quiz/";
+  linkBtn.target = "_blank";
+  linkBtn.rel = "noopener noreferrer";
+  linkBtn.className = "btn secondary home-link-btn";
+  linkBtn.textContent = "回到旧版 · 灵智测试";
+  homeCard.appendChild(br1);
+  homeCard.appendChild(br2);
+  homeCard.appendChild(linkBtn);
 }
 
 // 3）所有带 data-goto 的按钮：通用跳转
@@ -420,7 +508,7 @@ document
     });
   });
 
-// 故事魔杖：先控野猪王（X=30），输掉后自动回主页
+// 故事魔杖：先控野猪王（X=30），输掉后扣 HP 并回主页
 const btnBoarRoll = document.getElementById("btn-story-boar-roll");
 if (btnBoarRoll) {
   btnBoarRoll.addEventListener("click", () => {
@@ -434,14 +522,17 @@ if (btnBoarRoll) {
     } else {
       el.innerHTML = `随机数：<span class="highlight">${roll}</span>（> ${X}）<br />
         运气不好，还不怎么动脑。<br />即将返回主页，请重新选择你的命运。`;
+      loseHP("故事魔杖 · 先控野猪王：这把既没算清概率，也没拿到结果。");
       setTimeout(() => {
-        showScreen("screen-home");
-      }, 1600);
+        if (currentHP > 0) {
+          showScreen("screen-home");
+        }
+      }, 1500);
     }
   });
 }
 
-// 故事魔杖：先控空调大王（X=38），输掉后自动回主页
+// 故事魔杖：先控空调大王（X=38），输掉后扣 HP 并回主页
 const btnAcRoll = document.getElementById("btn-story-ac-roll");
 if (btnAcRoll) {
   btnAcRoll.addEventListener("click", () => {
@@ -455,14 +546,17 @@ if (btnAcRoll) {
     } else {
       el.innerHTML = `随机数：<span class="highlight">${roll}</span>（> ${X}）<br />
         暂时既不是智将，也不是脸帝。<br />1.5 秒后自动回主页重开一把。`;
+      loseHP("故事魔杖 · 先控空调大王：既没控住对方，也没守住自己。");
       setTimeout(() => {
-        showScreen("screen-home");
+        if (currentHP > 0) {
+          showScreen("screen-home");
+        }
       }, 1500);
     }
   });
 }
 
-// 故事魔杖：空放策略（X=60），输掉后自动回主页
+// 故事魔杖：空放策略（X=60），输掉后扣 HP 并回主页
 const btnPassRoll = document.getElementById("btn-story-pass-roll");
 if (btnPassRoll) {
   btnPassRoll.addEventListener("click", () => {
@@ -476,8 +570,11 @@ if (btnPassRoll) {
     } else {
       el.innerHTML = `随机数：<span class="highlight">${roll}</span>（> ${X}）<br />
         策略是对的，这把纯属脸黑。<br />为保证体验，一会儿自动送你回主页。`;
+      loseHP("故事魔杖 · 空放策略：策略没错，但现实告诉你——脸也是资源。");
       setTimeout(() => {
-        showScreen("screen-home");
+        if (currentHP > 0) {
+          showScreen("screen-home");
+        }
       }, 1700);
     }
   });
@@ -506,14 +603,16 @@ if (btnPirateSubmit) {
     const raw = inputEl.value.trim();
     if (!raw) {
       resultEl.innerHTML =
-        '至少先写点什么吧。<br />格式示例：<code>90,1,7,1,1</code>';
+        '至少先写点什么吧。<br />格式示例：<code>98,0,1,0,1</code>';
+      loseHP("海盗分金：什么都不写就想分赃？特斯拉已经在路上了。");
       return;
     }
 
     const parts = raw.replace(/，/g, ",").split(",");
     if (parts.length !== 5) {
       resultEl.innerHTML =
-        "需要刚好 5 个数字，用英文逗号隔开。<br />例如：<code>90,1,7,1,1</code>";
+        "需要刚好 5 个数字，用英文逗号隔开。<br />例如：<code>98,0,1,0,1</code>";
+      loseHP("海盗分金：格式都写不对，其他海盗只会先把你格式化。");
       return;
     }
 
@@ -522,10 +621,12 @@ if (btnPirateSubmit) {
       const n = parseInt(p.trim(), 10);
       if (Number.isNaN(n)) {
         resultEl.innerHTML = "你的输入里有不是整数的东西。";
+        loseHP("海盗分金：分赃分出小数点，这已经不是海盗，是会计事故。");
         return;
       }
       if (n < 0) {
         resultEl.innerHTML = "想给别人负金币？那不叫分赃，叫诈骗。";
+        loseHP("海盗分金：负数金币这种操作，连特斯拉都来了精神。");
         return;
       }
       nums.push(n);
@@ -537,6 +638,7 @@ if (btnPirateSubmit) {
     if (sum !== 100) {
       resultEl.innerHTML = `五个数加起来是 <span class="highlight">${sum}</span>，不是 100。<br />
         连总数都没数清楚，就想当老大？特斯拉已经在原地热车了。`;
+      loseHP("海盗分金：连 100 都对不齐，老大位置已经开始摇摇欲坠。");
       return;
     }
 
@@ -566,6 +668,7 @@ if (btnPirateSubmit) {
           你给自己塞了 <span class="highlight">${you}</span> 枚金币，雍和西一毛没有。<br />
           他们当然希望你被撞飞，下一轮说不定自己就能当老大。<br />
           评价：你把别人都当傻子，结果被制度当成了傻子。`;
+      loseHP("海盗分金：暴力自肥结果就是——暴力被肥。");
       return;
     }
 
@@ -576,6 +679,7 @@ if (btnPirateSubmit) {
           你这方案基本是“兄弟齐心，其利断金，先别管我是不是要被撞飞”。<br />
           作为 1 号老大，既没多拿钱，也没稳住自己的票。<br />
           评价：适合当团建负责人，不太适合当海盗头子。`;
+      loseHP("海盗分金：你开的是分享会，不是分赃会。");
       return;
     }
 
@@ -587,6 +691,7 @@ if (btnPirateSubmit) {
           有人拿的比你多：<span class="highlight">${othersMax}</span> &gt; 你的 <span class="highlight">${you}</span>。<br />
           你是出方案的人，不是来给队友发年终奖的金主爸爸。<br />
           评价：你适合写分赃协议书，但名字写错了，应该写在“最底下一行”。`;
+      loseHP("海盗分金：你自己拿得最少，其他海盗已经在讨论换老大了。");
       return;
     }
 
@@ -597,6 +702,7 @@ if (btnPirateSubmit) {
           你花金币去买 Jack 或高，却把雍和西晾在一边。<br />
           在标准 5 海盗局面里，真正好买的是雍和西，你现在是拿钱砸那些本来就不太想帮你的人。<br />
           评价：钱花出去了，票没买到。经典“冤大头”操作。`;
+      loseHP("海盗分金：你把贿赂当打赏，难怪投票区一片冷清。");
       return;
     }
 
@@ -606,6 +712,7 @@ if (btnPirateSubmit) {
         我都没预测到还有这种分法。<br />
         评价：恭喜你，首创<span class="highlight">海盗界新型呆子分配方法</span>。<br />
         建议：多想想“谁在后续局面里最惨”，他们才是最好买的票。`;
+    loseHP("海盗分金：你成功在博弈论教材里开辟了一个“反面案例”新章节。");
   });
 }
 
@@ -626,6 +733,7 @@ document
       const choice = btn.getAttribute("data-prison-one-choice");
       if (choice === "silent") {
         showScreen("screen-prisoner-one-result-CS");
+        loseHP("一次性囚徒困境：你选择沉默，对方选择坦白，刑期直接拉满。");
       } else {
         showScreen("screen-prisoner-one-result-CC");
       }
@@ -696,6 +804,9 @@ document
           html += `<br />三轮合计：你被判 <span class="highlight">${prisonTotalYou}</span> 年，对方 <span class="highlight">${prisonTotalStrong}</span> 年。<br /><br />`;
           html += makePrisonOverallComment();
           sumEl.innerHTML = html;
+        }
+        if (prisonTotalYou > prisonTotalStrong) {
+          loseHP("三轮囚徒困境：你的总刑期比对方更长，这门课的学费已经从自由里扣了。");
         }
         showScreen("screen-prisoner-summary");
       }
@@ -838,6 +949,10 @@ if (btnAuctionGiveup) {
         ${comment}<br /><br />
         总结：所谓“陷阱拍卖”，就是用一个小小的标的，慢慢把人锁进“再加一点就不亏”的循环里，<br />
         直到大家一起发现——原来真正被拍卖的是理智。`;
+
+    if (yourNet < 0) {
+      loseHP("陷阱拍卖：你为了一张 10 元卡交了几轮情绪学费。");
+    }
   });
 }
 
