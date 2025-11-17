@@ -1,7 +1,6 @@
 // =================== 图片配置 ===================
-const LEFT_IMAGE_COUNT = 2;   // pic_L1.png ~ pic_L2.png
-const RIGHT_IMAGE_COUNT = 2;  // pic_R1.png ~ pic_R2.png
-const BOTTOM_IMAGE_COUNT = 3; // pic_B1.png ~ pic_B3.png
+// 现在只用底部图片，随机 pic_B1.png ~ pic_B3.png
+const BOTTOM_IMAGE_COUNT = 3;
 
 // 陷阱拍卖配置
 const auctionValue = 10;
@@ -53,18 +52,9 @@ function setSafeSrc(img, baseName, count) {
   img.src = src;
 }
 
-// 刷新左上 / 右上 / 底部图片
+// 只刷新底部图片
 function updateDecorImages() {
-  const left = document.getElementById("img-left");
-  const right = document.getElementById("img-right");
   const bottom = document.getElementById("img-bottom");
-
-  if (left && LEFT_IMAGE_COUNT > 0) {
-    setSafeSrc(left, "pic_L", LEFT_IMAGE_COUNT);
-  }
-  if (right && RIGHT_IMAGE_COUNT > 0) {
-    setSafeSrc(right, "pic_R", RIGHT_IMAGE_COUNT);
-  }
   if (bottom && BOTTOM_IMAGE_COUNT > 0) {
     setSafeSrc(bottom, "pic_B", BOTTOM_IMAGE_COUNT);
   }
@@ -116,6 +106,55 @@ function updateHPDisplay() {
   valEl.textContent = `${currentHP}/${MAX_HP} ${hearts}`;
 }
 
+// 死亡动画 & 覆盖层
+function initDeathOverlay() {
+  const overlay = document.createElement("div");
+  overlay.id = "death-overlay";
+  overlay.innerHTML = `
+    <div class="death-box">
+      <h2>灵智已下线</h2>
+      <p>你的脑容量 HP 已归零，请稍作调整再来挑战。</p>
+      <button id="btn-death-restart">重新投胎一把</button>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  const btn = document.getElementById("btn-death-restart");
+  if (btn) {
+    btn.addEventListener("click", () => {
+      overlay.classList.remove("show");
+      const app = document.querySelector(".app");
+      if (app) {
+        app.classList.remove("death-shake");
+      }
+      currentHP = MAX_HP;
+      updateHPDisplay();
+      showScreen("screen-home");
+    });
+  }
+}
+
+function triggerDeathAnimation() {
+  const app = document.querySelector(".app");
+  const overlay = document.getElementById("death-overlay");
+
+  if (app) {
+    app.classList.add("death-shake");
+    setTimeout(() => {
+      app.classList.remove("death-shake");
+    }, 600);
+  }
+
+  if (overlay) {
+    overlay.classList.add("show");
+  } else {
+    // 万一 overlay 没成功创建，兜底逻辑
+    currentHP = MAX_HP;
+    updateHPDisplay();
+    showScreen("screen-home");
+  }
+}
+
 function loseHP(reasonText) {
   if (currentHP > 0) {
     currentHP -= 1;
@@ -129,10 +168,7 @@ function loseHP(reasonText) {
   alert(parts.join("\n\n"));
 
   if (currentHP <= 0) {
-    alert("HP 已见底，灵智系统强制重启。\n送你回主页重新做人。");
-    currentHP = MAX_HP;
-    updateHPDisplay();
-    showScreen("screen-home");
+    triggerDeathAnimation();
   }
 }
 
@@ -217,7 +253,7 @@ function resetAuction() {
   if (input) input.value = "";
 }
 
-// =================== 三色珠子游戏辅助 ===================
+// =================== 三色珠子游戏辅助（新版低收益版） ===================
 
 // 重置 10 局游戏
 function resetGambleGame() {
@@ -243,19 +279,25 @@ function resetGambleGame() {
   }
 }
 
-// 抽一次结果：表面上很香，实际上期望值是负的
+// 抽一次结果：奖励金额整体调低，更难长期赚钱
 function sampleGambleOutcome() {
   const r = Math.random(); // 0 ~ 1
 
-  // 设计的真实概率（总和 = 1）：
+  // 概率保持不变：
   // 头等奖：0.1%
   // 好运奖：1%
   // 安慰奖：9%
-  // 普通奖：70%（大概率小亏）
-  // 回血局：19.9%（看起来很爽）
+  // 普通奖：70%
+  // 回血局：19.9%
   //
-  // 在「每局成本 5 元」下，理论期望大约是：每局亏 0.46 元左右。
-  // 玩 10 局，平均下来整体净亏 ~4~5 元，更符合“豪赌”本质。
+  // 奖励金额改为：
+  // 头等奖：20
+  // 好运奖：10
+  // 安慰奖：5
+  // 普通奖：2
+  // 回血局：6
+  //
+  // 在每局成本 5 元下，单局期望大约 ≈ -1.8 元，长期基本是慢性亏钱局。
 
   if (r < 0.001) {
     // 0.1% —— 头等奖
@@ -268,8 +310,8 @@ function sampleGambleOutcome() {
       net,
     };
   } else if (r < 0.011) {
-    // 再加 1% —— 好运奖（区间 0.001 ~ 0.011）
-    const reward = randIntRange(10, 19); // 平均 14.5
+    // 再加 1% —— 好运奖
+    const reward = 10;
     const net = reward - 5;
     return {
       level: "好运奖",
@@ -278,8 +320,8 @@ function sampleGambleOutcome() {
       net,
     };
   } else if (r < 0.101) {
-    // 再加 9% —— 安慰奖（区间 0.011 ~ 0.101）
-    const reward = randIntRange(5, 9); // 平均 7
+    // 再加 9% —— 安慰奖
+    const reward = 5;
     const net = reward - 5;
     return {
       level: "安慰奖",
@@ -288,8 +330,8 @@ function sampleGambleOutcome() {
       net,
     };
   } else if (r < 0.801) {
-    // 再加 70% —— 普通奖（区间 0.101 ~ 0.801）
-    const reward = randIntRange(1, 4); // 平均 2.5，绝大多数局都是小亏
+    // 再加 70% —— 普通奖（绝大多数局都是小亏）
+    const reward = 2;
     const net = reward - 5;
     return {
       level: "普通奖",
@@ -298,8 +340,8 @@ function sampleGambleOutcome() {
       net,
     };
   } else {
-    // 剩下 19.9% —— 回血局（区间 0.801 ~ 1）
-    const reward = 10; // 看起来很爽的“返现局”
+    // 剩下 19.9% —— 回血局，看起来不错但期望仍然负
+    const reward = 6;
     const net = reward - 5;
     return {
       level: "回血局",
@@ -367,18 +409,18 @@ function playOneGambleRound() {
     if (gambleTotalNet > 0) {
       summaryHtml += `<br /><br />结论：<br />
         你这 10 局总共是 <span class="highlight">赚钱</span> 的。<br />
-        理论上可以截图找开发者“领奖”，<br />
-        但现实世界里，这种游戏只会在长时间里慢慢把你变成“优质客户”。`;
+        你今天确实比较欧，但长期来看，这种盘面是典型“慢性收智商税”。<br />
+        建议：截图找开发者“领奖”之前，先问问自己要不要再玩下一轮。`;
     } else if (gambleTotalNet === 0) {
       summaryHtml += `<br /><br />结论：<br />
         你这 10 局刚好 <span class="highlight">打平</span>。<br />
-        这种体验最危险，因为大脑会自动补全成：<br />
-        “再玩 10 局，说不定就开始赚了。”`;
+        大脑最喜欢这种体验：不亏不赚、再来一局。<br />
+        赌场真正赚的就是这种“再来一局”的冲动。`;
     } else {
       summaryHtml += `<br /><br />结论：<br />
         你这 10 局整体是 <span class="highlight">亏损</span> 的。<br />
-        输了就别截图了，再截图特斯拉可能就要出发了。<br />
-        赌场不怕你偶尔赢一两局，只怕你突然开窍不再玩。`;
+        输了就别截图找开发者还钱了，再截图特斯拉可能就要出发了。<br />
+        真正的教训是：游戏规则的期望值，远比“某几局的运气”重要。`;
     }
 
     if (gambleTotalNet < 0) {
@@ -392,15 +434,16 @@ function playOneGambleRound() {
   }
 }
 
-// =================== 初始化：HP 条 & 首页外链 ===================
+// =================== 初始化：HP 条 & 死亡蒙层 & 首页外链 ===================
 
 initHPBar();
 updateHPDisplay();
+initDeathOverlay();
 
-// 1）先刷新一次图片
+// 先刷新一次底部图片
 updateDecorImages();
 
-// 2）主页面：进入试炼选择菜单
+// 1）主页面：进入试炼选择菜单
 const mainStartBtn = document.getElementById("btn-main-start");
 if (mainStartBtn) {
   mainStartBtn.addEventListener("click", () => {
@@ -408,7 +451,7 @@ if (mainStartBtn) {
   });
 }
 
-// 首页追加“回到旧版灵智测试”按钮（JS 动态插入，不改 HTML）
+// 2）首页追加“回到旧版灵智测试”按钮
 const homeCard = document.querySelector("#screen-home .card");
 if (homeCard) {
   const br1 = document.createElement("br");
