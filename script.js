@@ -506,14 +506,14 @@ if (btnPirateSubmit) {
     const raw = inputEl.value.trim();
     if (!raw) {
       resultEl.innerHTML =
-        '至少先写点什么吧。<br />格式示例：<code>98,0,1,0,1</code>';
+        '至少先写点什么吧。<br />格式示例：<code>90,1,7,1,1</code>';
       return;
     }
 
     const parts = raw.replace(/，/g, ",").split(",");
     if (parts.length !== 5) {
       resultEl.innerHTML =
-        "需要刚好 5 个数字，用英文逗号隔开。<br />例如：<code>98,0,1,0,1</code>";
+        "需要刚好 5 个数字，用英文逗号隔开。<br />例如：<code>90,1,7,1,1</code>";
       return;
     }
 
