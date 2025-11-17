@@ -52,7 +52,7 @@ footer {
 /* 装饰图片 */
 .decor-img {
   position: absolute;
-  width: 96px;
+  width: 120px;
   height: auto;
   opacity: 0.95;
   pointer-events: none;
@@ -69,8 +69,8 @@ footer {
 }
 
 .decor-bottom {
-  max-width: 220px;
-  width: 40vw;
+  max-width: 150px;
+  width: 30vw;
   height: auto;
   opacity: 0.95;
 }
